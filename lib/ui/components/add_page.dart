@@ -1,0 +1,126 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:doll_app/ui/components/upload_image_widget.dart';
+
+class AddItemPage extends StatefulWidget {
+  @override
+  _AddItemPageState createState() => _AddItemPageState();
+}
+
+class _AddItemPageState extends State<AddItemPage> {
+  final _formKey = GlobalKey<FormState>();
+  // 圖片
+  String _path = '';
+  // 項目名稱
+  String _name = '';
+  // 購買日期
+  TextEditingController dateController = TextEditingController(text: '');
+  // 金額
+  // 二補
+  // 總計
+  // 取件
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Item"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              UploadImageWidget(
+              onImagePicked: (path) {
+                setState(() {
+                  _path = path;
+                });
+              },
+              child: _path == ""
+                  ? Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        color: const Color(0xFFCCCCCC),
+                      ),
+                      child: Icon(Icons.collections_outlined),
+                    )
+                  : SizedBox(
+                      height: 100,
+                      width: 100,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(13),
+                        child: Image.file(
+                          File(_path),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+            ),
+              TextFormField(
+                decoration: InputDecoration(labelText: '項目名稱'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return '必填項目';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _name = value!,
+              ),
+              InkWell(
+                onTap: () async {
+                  final selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100),
+                  );
+                  if (selectedDate != null) {
+                    setState(() {
+                      dateController.text = '${selectedDate.year}/${selectedDate.month}/${selectedDate.day}';
+                    });
+                  }
+                },
+                child: IgnorePointer(
+                  child: TextFormField(
+                    controller: dateController,
+                    decoration: InputDecoration(
+                      labelText: '購買日期',
+                    ),
+                    validator: (value) {
+                      if (dateController.text == '') {
+                        return '請選擇日期';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('新增成功: $_name, ${dateController.text}'),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text('送出'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

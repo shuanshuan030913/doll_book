@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:doll_app/ui/components/item_page.dart';
+import 'package:doll_app/ui/components/add_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -77,7 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your action here
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddItemPage(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
