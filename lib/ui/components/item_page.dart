@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ItemPage extends StatelessWidget {
-  final int index;
+  final String name;
 
-  const ItemPage({super.key, required this.index});
+  const ItemPage({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Item $index'),
+        title: Text('Item $name'),
       ),
       body: Center(
-        child: Text('You selected Item $index'),
+        child: Text('You selected $name'),
       ),
     );
   }

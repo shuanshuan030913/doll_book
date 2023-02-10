@@ -12,68 +12,66 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TrackingScrollController _trackingScrollController =
-      TrackingScrollController();
+
+  List<String> _items = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        controller: _trackingScrollController,
         slivers: <Widget>[
           const SliverAppBar(
-            title: Text('Home Screen'),
+            expandedHeight: 200,
+            floating: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('My Items'),
+              centerTitle: true,
+            ),
           ),
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 16.0),
-                      child: const Text(
-                        "List of Items",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                'My Items',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16.0),
+            sliver:SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.0,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ItemPage(name: _items[index]),
                         ),
+                      );
+                    },
+                    child: Card(
+                      child: Center(
+                        child: Text(_items[index]),
                       ),
                     ),
-                    GridView.count(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1.0,
-                      crossAxisSpacing: 16.0,
-                      mainAxisSpacing: 16.0,
-                      shrinkWrap: true,
-                      children: List.generate(7, (index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ItemPage(index: index),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Item $index',
-                              )
-                            )
-                          )
-                        );
-                      })
-                    ),
-                ]
-              )
-            )
-          ),
+                  );
+                },
+                childCount: _items.length,
+              ),
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -83,7 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(
               builder: (context) => AddItemPage(),
             ),
-          );
+          ).then((newItem) {
+            // print(newItem);
+            if (newItem != null) {
+              setState(() {
+                _items.add(newItem);
+              });
+            }
+          });
         },
         child: const Icon(Icons.add),
       ),

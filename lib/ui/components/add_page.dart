@@ -21,6 +21,7 @@ class _AddItemPageState extends State<AddItemPage> {
   // 二補
   // 總計
   // 取件
+  bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +102,29 @@ class _AddItemPageState extends State<AddItemPage> {
                   ),
                 ),
               ),
+              Container(
+                padding: EdgeInsets.all(16.0),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _isChecked = !_isChecked;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: _isChecked,
+                        onChanged: (value) {
+                          setState(() {
+                            _isChecked = value!;
+                          });
+                        },
+                      ),
+                      Text('已取件'),
+                    ],
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(
@@ -109,9 +133,10 @@ class _AddItemPageState extends State<AddItemPage> {
                       _formKey.currentState!.save();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('新增成功: $_name, ${dateController.text}'),
+                          content: Text('新增成功'),
                         ),
                       );
+                      Navigator.pop(context, _name);
                     }
                   },
                   child: Text('送出'),
