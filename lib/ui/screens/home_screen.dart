@@ -3,7 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:doll_app/ui/components/item_page.dart';
 import 'package:doll_app/ui/components/add_page.dart';
-import 'package:doll_app/ui/components/item.dart';
+import 'package:doll_app/ui/components/utils/item.dart';
 import 'package:doll_app/ui/components/item_card.dart';
 
 

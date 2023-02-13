@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:doll_app/ui/components/upload_image_widget.dart';
-import 'package:doll_app/ui/components/item.dart';
+import 'package:doll_app/ui/components/utils/upload_image_widget.dart';
+import 'package:doll_app/ui/components/utils/item.dart';
 
 class AddItemPage extends StatefulWidget {
   @override
@@ -139,7 +139,10 @@ class _AddItemPageState extends State<AddItemPage> {
                           content: Text('新增成功'),
                         ),
                       );
-                      Navigator.pop(context, Item(name: _name, path: _path));
+                      Navigator.pop(
+                        context,
+                        Item(name: _name, path: _path, date: dateController.text),
+                      );
                     }
                   },
                   child: Text('送出'),
