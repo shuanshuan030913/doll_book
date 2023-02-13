@@ -1,8 +1,8 @@
 import 'package:doll_app/ui/components/item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:doll_app/ui/components/utils/item.dart';
-import 'package:doll_app/ui/components/utils/image_card.dart';
+import 'package:doll_app/ui/components/item.dart';
+import 'package:doll_app/ui/components/image_card.dart';
 
 
 class ItemPage extends StatelessWidget {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:doll_app/ui/components/utils/item.dart';
 
 class ImageCard extends StatelessWidget {
   final String path;
