@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:doll_app/ui/components/item.dart';
+
 
 class ItemPage extends StatelessWidget {
-  final String name;
+  final Item item;
 
-  const ItemPage({super.key, required this.name});
+  const ItemPage({required this.item});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Item $name'),
+        title: Text(item.name),
+        actions: const <Widget>[
+          IconButton(
+            icon: Icon(
+              CupertinoIcons.pen,
+              color: Colors.white,
+              ),
+            onPressed: null,
+          )
+        ],
       ),
       body: Center(
-        child: Text('You selected $name'),
+        child: item.path == ""
+            ? Text("No picture")
+            : Image.asset(item.path),
       ),
     );
   }

@@ -3,6 +3,9 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:doll_app/ui/components/item_page.dart';
 import 'package:doll_app/ui/components/add_page.dart';
+import 'package:doll_app/ui/components/item.dart';
+import 'package:doll_app/ui/components/item_card.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  List<String> _items = [];
+  final List<Item> _items = [];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text('My Items'),
+              title: Text('娃口名簿'),
               centerTitle: true,
             ),
           ),
@@ -33,9 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                'My Items',
+                '已登錄',
                 style: TextStyle(
-                  fontSize: 24.0,
+                  fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -45,10 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.all(16.0),
             sliver:SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 childAspectRatio: 1.0,
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 12.0,
+                mainAxisSpacing: 12.0,
               ),
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -57,15 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ItemPage(name: _items[index]),
+                          builder: (context) => ItemPage(item: _items[index]),
                         ),
                       );
                     },
-                    child: Card(
-                      child: Center(
-                        child: Text(_items[index]),
-                      ),
-                    ),
+                    child: ItemCard(item: _items[index])
                   );
                 },
                 childCount: _items.length,

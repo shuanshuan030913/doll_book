@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:doll_app/ui/components/upload_image_widget.dart';
+import 'package:doll_app/ui/components/item.dart';
 
 class AddItemPage extends StatefulWidget {
   @override
@@ -20,14 +21,16 @@ class _AddItemPageState extends State<AddItemPage> {
   // 金額
   // 二補
   // 總計
+  // 來源
   // 取件
+  // 備註
   bool _isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Item"),
+        title: Text("新增"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -102,29 +105,29 @@ class _AddItemPageState extends State<AddItemPage> {
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(16.0),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      _isChecked = !_isChecked;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: _isChecked,
-                        onChanged: (value) {
-                          setState(() {
-                            _isChecked = value!;
-                          });
-                        },
-                      ),
-                      Text('已取件'),
-                    ],
-                  ),
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.all(16.0),
+              //   child: InkWell(
+              //     onTap: () {
+              //       setState(() {
+              //         _isChecked = !_isChecked;
+              //       });
+              //     },
+              //     child: Row(
+              //       children: [
+              //         Checkbox(
+              //           value: _isChecked,
+              //           onChanged: (value) {
+              //             setState(() {
+              //               _isChecked = value!;
+              //             });
+              //           },
+              //         ),
+              //         Text('已取件'),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(
@@ -136,7 +139,7 @@ class _AddItemPageState extends State<AddItemPage> {
                           content: Text('新增成功'),
                         ),
                       );
-                      Navigator.pop(context, _name);
+                      Navigator.pop(context, Item(name: _name, path: _path));
                     }
                   },
                   child: Text('送出'),
