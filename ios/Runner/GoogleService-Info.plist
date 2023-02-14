@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>509890937344-b83qt2qdrgaf0bnptriscpss0qtpcfht.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.509890937344-b83qt2qdrgaf0bnptriscpss0qtpcfht</string>
+	<key>API_KEY</key>
+	<string>AIzaSyArLNtv_qMypyCdH3sSVaye1e1_0L3AfYc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>509890937344</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.dollApp</string>
+	<key>PROJECT_ID</key>
+	<string>dollcalculater</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dollcalculater.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:509890937344:ios:f165eb7182de7b6fa24ee5</string>
+</dict>
+</plist>
