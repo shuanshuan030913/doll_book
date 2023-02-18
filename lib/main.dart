@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doll_app/ui/screens/nav_screen.dart';
+import 'package:doll_app/ui/screens/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.brown,
       ),
-      home: const NavScreen(),
+      home: MainScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

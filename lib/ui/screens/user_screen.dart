@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:doll_app/ui/user/auth_repository.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({Key? key}) : super(key: key);
@@ -10,6 +9,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
+  final AuthRepository _authRepository = AuthRepository();
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
 
@@ -19,7 +19,7 @@ class _UserScreenState extends State<UserScreen> {
       controller: _trackingScrollController,
       slivers: [
         SliverAppBar(
-          title: Text('User Screen'),
+          title: Text('Login'),
         ),
         SliverToBoxAdapter(
           child: Container(
