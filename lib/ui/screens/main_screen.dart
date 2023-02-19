@@ -27,9 +27,17 @@ class _MainScreenState extends State<MainScreen> {
     try {
       String? token = await getTokenFromPrefs();
       if (token != null) {
-        setState(() {
-          isAuthenticated = true;
-        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => NavScreen()),
+        );
+      } else {
+        // User is not logged in, navigate to login page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
       }
     } on FirebaseAuthException catch (e) {
       print(e);
@@ -38,17 +46,12 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Future<void> saveTokenToPrefs() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    String token = user!.uid;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userToken', token);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isAuthenticated ? NavScreen() : LoginScreen(),
+      body: Center(
+          child: CircularProgressIndicator(),
+        ),
     );
   }
 }

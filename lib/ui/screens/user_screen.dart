@@ -1,5 +1,6 @@
+import 'package:doll_app/ui/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:doll_app/ui/user/auth_repository.dart';
+import 'package:doll_app/ui/screens/user/auth_repository.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({Key? key}) : super(key: key);
@@ -13,13 +14,29 @@ class _UserScreenState extends State<UserScreen> {
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
 
+  Future<void> _signOut() async {
+    try {
+      await _authRepository.signOutWithAccount();
+      // Navigate back to login page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } catch (e) {
+      print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to sign out'),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       controller: _trackingScrollController,
       slivers: [
         SliverAppBar(
-          title: Text('Login'),
+          title: Text('帳號管理'),
         ),
         SliverToBoxAdapter(
           child: Container(
@@ -35,6 +52,13 @@ class _UserScreenState extends State<UserScreen> {
                   children: [
                     Text('user: Hello'),
                   ],
+                ),
+              ),
+              Center(
+                child: ElevatedButton.icon(
+                  icon: Icon(Icons.logout),
+                  label: Text('登出'),
+                  onPressed: _signOut,
                 ),
               ),
             ]),

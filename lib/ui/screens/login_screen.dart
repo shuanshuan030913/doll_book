@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doll_app/ui/user/auth_repository.dart';
+import 'package:doll_app/ui/screens/user/auth_repository.dart';
 import 'package:doll_app/ui/screens/nav_screen.dart';
 
 class LoginScreen extends StatelessWidget {

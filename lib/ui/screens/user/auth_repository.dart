@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthRepositoryImpl {
   Future<bool> signInWithGoogle();
-  Future<void> signOut();
+  Future<void> signOutWithAccount();
 }
 
 class AuthRepository implements AuthRepositoryImpl {
@@ -42,10 +42,16 @@ class AuthRepository implements AuthRepositoryImpl {
   }
 
   @override
-  Future<void> signOut() async {
+  Future<void> signOutWithAccount() async {
+
+    // Sign out of Firebase and Google
     Future.wait([
       _firebaseAuth.signOut(),
       _googleSignIn.signOut(),
     ]);
+
+    // Delete user token from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userToken');
   }
 }
