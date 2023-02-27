@@ -1,4 +1,5 @@
 import 'package:doll_app/ui/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:doll_app/ui/screens/user/auth_repository.dart';
 
@@ -10,6 +11,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthRepository _authRepository = AuthRepository();
   final TrackingScrollController _trackingScrollController =
       TrackingScrollController();
@@ -32,6 +34,8 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    User? user = _auth.currentUser;
+    // print(user);
     return CustomScrollView(
       controller: _trackingScrollController,
       slivers: [
@@ -50,7 +54,7 @@ class _UserScreenState extends State<UserScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Text('user: Hello'),
+                    Text('user: ${user?.displayName ?? user?.email}'),
                   ],
                 ),
               ),
