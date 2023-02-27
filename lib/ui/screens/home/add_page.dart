@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:doll_app/ui/components/upload_image_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:doll_app/ui/components/upload_image_widget.dart';
 import 'package:doll_app/ui/components/item.dart';
@@ -9,8 +11,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart' as path;
 
-
 FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 class AddItemPage extends StatefulWidget {
   @override
   _AddItemPageState createState() => _AddItemPageState();
@@ -25,14 +27,18 @@ class _AddItemPageState extends State<AddItemPage> {
   String _name = '';
   // 購買日期
   DateTime? _createDate;
-  TextEditingController dateController = TextEditingController(text: '');
+  // TextEditingController dateController = TextEditingController(text: '');
   // 金額
+  double? _price;
   // 二補
+  double? _priceAdd;
   // 總計
   // 來源
+  String _source = '';
   // 取件
-  // 備註
   bool _isChecked = false;
+  // 備註
+  String _remark = '';
 
   Future getImage() async {
     final picker = ImagePicker();
@@ -46,11 +52,12 @@ class _AddItemPageState extends State<AddItemPage> {
   Future uploadImage() async {
     final User user = FirebaseAuth.instance.currentUser!;
     final String userId = user.uid;
-    
-    final String fileName = DateTime.now().toString() + path.extension(_imageFile!.path);
 
-    Reference storageRef = 
-      FirebaseStorage.instance.ref().child('items/$userId/images/$fileName');
+    final String fileName =
+        DateTime.now().toString() + path.extension(_imageFile!.path);
+
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child('items/$userId/images/$fileName');
 
     print('uploadImage() _imageFile: $_imageFile');
     await storageRef.putFile(_imageFile!);
@@ -61,7 +68,6 @@ class _AddItemPageState extends State<AddItemPage> {
   }
 
   Future<void> addItem() async {
-
     // Get the current user's ID
     final User user = FirebaseAuth.instance.currentUser!;
     final String userId = user.uid;
@@ -78,15 +84,20 @@ class _AddItemPageState extends State<AddItemPage> {
       'id': itemId,
       'name': _name,
       'image': imageUrl,
+      '_price': _price != null ? _price : 0,
+      '_priceAdd': _priceAdd != null ? _priceAdd : 0,
+      '_source': _source,
+      '_remark': _remark,
       'create_date': _createDate,
     };
 
     // Add a new item to the "items" array field in the user's document
-    await userDocRef.update({
-      'items': FieldValue.arrayUnion([data])
-    })
-    .then((value) => print("User Added"))
-    .catchError((error) => print("Failed to add user: $error"));
+    await userDocRef
+        .update({
+          'items': FieldValue.arrayUnion([data])
+        })
+        .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
     Navigator.pop(context);
 
     // await data.get().then((event) {
@@ -95,7 +106,6 @@ class _AddItemPageState extends State<AddItemPage> {
     //     print("${doc.id} => ${doc.data()}");
     //   }
     // });
-    
   }
 
   @override
@@ -118,40 +128,16 @@ class _AddItemPageState extends State<AddItemPage> {
                 child: Container(
                   height: 200,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
                   ),
-                  child: _imageFile == null
-                    ? Center(child: Text('選擇圖片')) : Image.file(_imageFile!),
+                  child: ClipRRect(
+                    child: _imageFile == null
+                        ? Center(child: Text('選擇圖片'))
+                        : Image.file(_imageFile!),
+                  ),
                 ),
               ),
-            //   UploadImageWidget(
-            //   onImagePicked: (path) {
-            //     setState(() {
-            //       _imageFile = path as File;
-            //     });
-            //   },
-            //   child: _imageFile == ""
-            //       ? Container(
-            //           height: 100,
-            //           width: 100,
-            //           decoration: BoxDecoration(
-            //             borderRadius: BorderRadius.circular(13),
-            //             color: const Color(0xFFCCCCCC),
-            //           ),
-            //           child: Icon(Icons.collections_outlined),
-            //         )
-            //       : SizedBox(
-            //           height: 100,
-            //           width: 100,
-            //           child: ClipRRect(
-            //             borderRadius: BorderRadius.circular(13),
-            //             child: Image.file(
-            //               File(_imageFile as String),
-            //               fit: BoxFit.cover,
-            //             ),
-            //           ),
-            //         ),
-              // ),
               TextFormField(
                 decoration: InputDecoration(labelText: '項目名稱'),
                 validator: (value) {
@@ -193,6 +179,52 @@ class _AddItemPageState extends State<AddItemPage> {
                     },
                   ),
                 ),
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: '金額',
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  return null;
+                },
+                onSaved: (value) {
+                  _price = double.parse(value!);
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: '二補',
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  return null;
+                },
+                onSaved: (value) {
+                  _priceAdd = double.parse(value!);
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: '來源',
+                  hintText: 'https://',
+                ),
+                validator: (value) {
+                  // if (value!.startsWith('https://')) {
+                  //   return '請輸入來源網址';
+                  // }
+                  return null;
+                },
+                onSaved: (value) => _source = value!,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: '備註'),
+                validator: (value) {
+                  return null;
+                },
+                onSaved: (value) => _remark = value!,
               ),
               // Container(
               //   padding: EdgeInsets.all(16.0),
