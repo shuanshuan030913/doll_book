@@ -19,7 +19,7 @@ class ItemCard extends StatelessWidget {
               color: Colors.grey[300],
               borderRadius: BorderRadius.all(Radius.circular(6.0)),
             ),
-            child: ImageCard(path: item.path),
+            child: ImageCard(image: item.image),
           ),
           SizedBox(
             height: 6,

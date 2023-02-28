@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:doll_app/ui/components/item.dart';
 import 'package:doll_app/ui/components/image_card.dart';
 
-
 class ItemPage extends StatelessWidget {
   final Item item;
 
@@ -20,7 +19,7 @@ class ItemPage extends StatelessWidget {
             icon: Icon(
               CupertinoIcons.pen,
               color: Colors.white,
-              ),
+            ),
             onPressed: null,
           )
         ],
@@ -36,34 +35,33 @@ class ItemPage extends StatelessWidget {
                 color: Colors.grey[300],
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
               ),
-              child: ImageCard(path: item.path),
+              child: ImageCard(image: item.image),
             ),
             Align(
-              alignment: Alignment.topLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                    "項目名稱: ${item.name}",
-                    style: TextStyle(
-                      fontSize: 16,
+                alignment: Alignment.topLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "購買日期: ${item.date}",
-                    style: TextStyle(
-                      fontSize: 16,
+                    Text(
+                      "項目名稱: ${item.name}",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "購買日期: ${item.createDate != null ? "${item.createDate?.year}/${item.createDate?.month}/${item.createDate?.day}" : ''}",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                )),
           ],
         ),
       ),

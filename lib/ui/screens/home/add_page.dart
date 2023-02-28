@@ -10,6 +10,7 @@ import 'package:doll_app/ui/components/item.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart' as path;
+import 'package:doll_app/constants.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -36,14 +37,11 @@ class _AddItemPageState extends State<AddItemPage> {
   double? _priceAdd;
   // 總計
   // 來源
-  String _source = '';
+  String? _source;
   // 取件
   bool _isChecked = false;
   // 備註
-  String _remark = '';
-
-  // 狀態選項
-  List<String> _statusOptions = ['數調中', '已填單', '大貨中', '已回家'];
+  String? _remark;
 
   Future getImage() async {
     final picker = ImagePicker();
@@ -89,11 +87,12 @@ class _AddItemPageState extends State<AddItemPage> {
       'id': itemId,
       'name': _name,
       'image': imageUrl,
-      '_price': _price,
-      '_priceAdd': _priceAdd,
-      '_source': _source,
-      '_remark': _remark,
-      'create_date': _createDate,
+      'status': _status,
+      'price': _price,
+      'priceAdd': _priceAdd,
+      'source': _source,
+      'remark': _remark,
+      'createDate': _createDate,
     };
 
     // Add a new item to the "items" array field in the user's document
@@ -206,7 +205,7 @@ class _AddItemPageState extends State<AddItemPage> {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _status,
-                    items: _statusOptions.map((option) {
+                    items: statusOptions.map((option) {
                       return DropdownMenuItem<String>(
                         value: option,
                         child: Text(option),
