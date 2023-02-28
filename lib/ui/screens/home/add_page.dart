@@ -28,6 +28,8 @@ class _AddItemPageState extends State<AddItemPage> {
   // 購買日期
   DateTime? _createDate;
   // TextEditingController dateController = TextEditingController(text: '');
+  // 當前狀態
+  String _status = '數調中';
   // 金額
   double? _price;
   // 二補
@@ -40,9 +42,13 @@ class _AddItemPageState extends State<AddItemPage> {
   // 備註
   String _remark = '';
 
+  // 狀態選項
+  List<String> _statusOptions = ['數調中', '已填單', '大貨中', '已回家'];
+
   Future getImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile == null) return;
     setState(() {
       _imageFile = File(pickedFile!.path);
     });
@@ -59,11 +65,9 @@ class _AddItemPageState extends State<AddItemPage> {
     Reference storageRef =
         FirebaseStorage.instance.ref().child('items/$userId/images/$fileName');
 
-    print('uploadImage() _imageFile: $_imageFile');
     await storageRef.putFile(_imageFile!);
     // Get the download URL for the uploaded image
     final String imageUrl = await storageRef.getDownloadURL();
-    print('uploadImage() imageUrl: $imageUrl');
     return imageUrl;
   }
 
@@ -79,26 +83,36 @@ class _AddItemPageState extends State<AddItemPage> {
     // Generate a new unique ID for the item
     final String itemId = userDocRef.collection('items').doc().id;
 
-    String imageUrl = await uploadImage();
+    print('userDocRef: $userDocRef');
+    String? imageUrl = _imageFile == null ? null : await uploadImage();
     Map<String, dynamic> data = {
       'id': itemId,
       'name': _name,
       'image': imageUrl,
-      '_price': _price != null ? _price : 0,
-      '_priceAdd': _priceAdd != null ? _priceAdd : 0,
+      '_price': _price,
+      '_priceAdd': _priceAdd,
       '_source': _source,
       '_remark': _remark,
       'create_date': _createDate,
     };
 
     // Add a new item to the "items" array field in the user's document
-    await userDocRef
-        .update({
-          'items': FieldValue.arrayUnion([data])
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
-    Navigator.pop(context);
+    final userData = await userDocRef.get().then((doc) => doc.data());
+    if (userData != null) {
+      await userDocRef
+          .update({
+            'items': FieldValue.arrayUnion([data])
+          })
+          .then((value) => {print("User Added"), Navigator.pop(context)})
+          .catchError((error) => print("Failed to add items: $error"));
+    } else {
+      await userDocRef
+          .set({
+            'items': FieldValue.arrayUnion([data])
+          })
+          .then((value) => {print("User Added"), Navigator.pop(context)})
+          .catchError((error) => print("Failed to add items: $error"));
+    }
 
     // await data.get().then((event) {
     //   print('success event');
@@ -180,31 +194,79 @@ class _AddItemPageState extends State<AddItemPage> {
                   ),
                 ),
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: '金額',
+              SizedBox(height: 12.0),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                height: 50.0,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0),
+                  color: Color.fromARGB(255, 255, 217, 182),
                 ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: (value) {
-                  return null;
-                },
-                onSaved: (value) {
-                  _price = double.parse(value!);
-                },
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _status,
+                    items: _statusOptions.map((option) {
+                      return DropdownMenuItem<String>(
+                        value: option,
+                        child: Text(option),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _status = value;
+                        });
+                      }
+                    },
+                  ),
+                ),
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: '二補',
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: (value) {
-                  return null;
-                },
-                onSaved: (value) {
-                  _priceAdd = double.parse(value!);
-                },
+              SizedBox(height: 6.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: '金額',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        validator: (value) {
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _price = double.tryParse(value!);
+                        },
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: '二補',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        validator: (value) {
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _priceAdd = double.tryParse(value!);
+                        },
+                      ),
+                    ),
+                  )
+                ],
               ),
               TextFormField(
                 decoration: InputDecoration(
