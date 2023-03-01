@@ -20,9 +20,41 @@ class _HomeScreenState extends State<HomeScreen> {
   // the initial selected status
   String _filterStatus = '不限';
 
+  Stream<List<Item>> _itemsStream = Stream.value([]);
+
   final User user = FirebaseAuth.instance.currentUser!;
 
   final List _items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _itemsStream = getDataFromFirestore();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _itemsStream = getDataFromFirestore();
+  }
+
+  Stream<List<Item>> getDataFromFirestore() {
+    CollectionReference<Map<String, dynamic>> collectionReference =
+        FirebaseFirestore.instance.collection('data');
+    return collectionReference
+        .doc(user.uid)
+        .snapshots()
+        .map((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+      List<Item> items = [];
+      if (snapshot.exists) {
+        for (Map<String, dynamic> map in snapshot.data()!['items']) {
+          Item item = Item.fromMap(map);
+          items.add(item);
+        }
+      }
+      return items;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,30 +92,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          // const SliverToBoxAdapter(
-          //   child: Padding(
-          //     padding: EdgeInsets.all(16.0),
-          //     child: Text(
-          //       '已登錄',
-          //       style: TextStyle(
-          //         fontSize: 18.0,
-          //         fontWeight: FontWeight.bold,
-          //       ),
-          //     ),
-          //   ),
-          // ),
           SliverPadding(
             padding: EdgeInsets.all(16.0),
-            sliver: StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('data')
-                  .doc(user.uid)
-                  // .collection('items')
-                  // .where('status',
-                  //     isEqualTo: _filterStatus == '不限' ? null : _filterStatus)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+            sliver: StreamBuilder<List<Item>>(
+              stream: _itemsStream,
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<Item>> snapshot) {
                 if (snapshot.hasError) {
                   return SliverToBoxAdapter(
                     child: Text('Error: ${snapshot.error}'),
@@ -98,10 +112,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 }
 
-                final data = snapshot.data!['items'];
-                print('data: ${snapshot.data!['items']}');
+                final List<Item> data = snapshot.data!;
 
-                if (data!.isEmpty) {
+                List<Item> filteredItems = _filterStatus == '不限'
+                    ? data
+                    : data
+                        .where((item) => item.status == _filterStatus)
+                        .toList();
+
+                if (filteredItems.isEmpty) {
                   return SliverToBoxAdapter(
                     child: Center(
                       child: Text('找不到娃(◞‸◟ ) 💔'),
@@ -118,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      final Item item = Item.fromMap(data[index]);
+                      final Item item = filteredItems[index];
                       return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -130,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                           child: ItemCard(item: item));
                     },
-                    childCount: data.length,
+                    childCount: filteredItems.length,
                   ),
                 );
               },
