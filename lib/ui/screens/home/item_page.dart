@@ -35,7 +35,7 @@ class ItemPage extends StatelessWidget {
                 color: Colors.grey[300],
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
               ),
-              child: ImageCard(image: item.image),
+              child: ImageCard(image: item.image, status: item.status),
             ),
             Align(
                 alignment: Alignment.topLeft,

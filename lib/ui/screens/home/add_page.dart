@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:doll_app/ui/components/upload_image_widget.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:doll_app/ui/components/item.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,13 +43,46 @@ class _AddItemPageState extends State<AddItemPage> {
   // 備註
   String? _remark;
 
+  Future<CroppedFile?> _cropImage(File imageFile) async {
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+      ],
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarColor: Colors.deepOrange,
+          toolbarTitle: '裁切',
+          statusBarColor: Colors.deepOrange.shade900,
+          backgroundColor: Colors.white,
+        ),
+        IOSUiSettings(
+          title: '裁切',
+        ),
+        WebUiSettings(
+          context: context,
+        ),
+      ],
+    );
+
+    return croppedFile;
+  }
+
   Future getImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile == null) return;
-    setState(() {
-      _imageFile = File(pickedFile!.path);
-    });
+    final croppedFile = await _cropImage(File(pickedFile.path));
+
+    if (croppedFile != null) {
+      setState(() {
+        _imageFile = File(croppedFile.path);
+      });
+    }
     print('getImage() _imageFile: $_imageFile');
   }
 

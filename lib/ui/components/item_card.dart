@@ -15,14 +15,13 @@ class ItemCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
+            child: ImageCard(
+              status: item.status,
+              image: item.image,
             ),
-            child: ImageCard(image: item.image),
           ),
           SizedBox(
-            height: 6,
+            height: 3,
           ),
           Text(
             item.name,
