@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:doll_app/ui/components/upload_image_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +45,7 @@ class _AddItemPageState extends State<AddItemPage> {
   Future<CroppedFile?> _cropImage(File imageFile) async {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: imageFile.path,
+      compressQuality: 50,
       aspectRatioPresets: [
         CropAspectRatioPreset.square,
         CropAspectRatioPreset.ratio3x2,

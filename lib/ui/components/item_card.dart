@@ -25,7 +25,7 @@ class ItemCard extends StatelessWidget {
           ),
           Text(
             item.name,
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 14),
           ),
         ],
       ),

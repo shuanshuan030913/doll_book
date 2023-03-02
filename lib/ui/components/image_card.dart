@@ -98,7 +98,7 @@ class ImageCard extends StatelessWidget {
         //   )
         : ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(6.0)),
-            child: Image.asset(
+            child: Image.network(
               image!,
               fit: BoxFit.cover,
             ),
