@@ -9,14 +9,16 @@ import 'package:doll_app/ui/components/item_card.dart';
 import 'package:doll_app/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+import '../../colors.dart';
+
+class ListScreen extends StatefulWidget {
+  const ListScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ListScreen> createState() => _ListScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ListScreenState extends State<ListScreen> {
   // the initial selected status
   String _filterStatus = '不限';
 
@@ -62,16 +64,19 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
-            expandedHeight: 200,
-            floating: false,
             pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: Color.fromARGB(255, 234, 198, 181),
+            expandedHeight: 55.0,
+            backgroundColor: primaryColor,
+            title: Text('我的娃'),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  // Handle edit button press
+                  print('edit');
+                },
               ),
-              title: Text('娃口名簿'),
-              centerTitle: true,
-            ),
+            ],
           ),
           SliverToBoxAdapter(
             child: Padding(
@@ -160,23 +165,32 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddItemPage(),
-            ),
-          ).then((newItem) {
-            // print(newItem);
-            if (newItem != null) {
-              setState(() {
-                _items.add(newItem);
+      floatingActionButton: SizedBox(
+        width: 50.0,
+        height: 50.0,
+        child: Opacity(
+          opacity: 0.8,
+          child: FloatingActionButton(
+            backgroundColor: primaryColor,
+            elevation: 0.0, // Remove the shadow
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddItemPage(),
+                ),
+              ).then((newItem) {
+                // print(newItem);
+                if (newItem != null) {
+                  setState(() {
+                    _items.add(newItem);
+                  });
+                }
               });
-            }
-          });
-        },
-        child: const Icon(Icons.add),
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
       ),
     );
   }

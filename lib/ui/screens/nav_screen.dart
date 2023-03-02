@@ -4,7 +4,10 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 import 'package:doll_app/ui/screens/home_screen.dart';
+import 'package:doll_app/ui/screens/list_screen.dart';
 import 'package:doll_app/ui/screens/user_screen.dart';
+
+import '../../colors.dart';
 
 class NavScreen extends StatefulWidget {
   const NavScreen({Key? key}) : super(key: key);
@@ -16,11 +19,13 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
+    const ListScreen(),
     const UserScreen(),
   ];
 
   final List<IconData> _icons = [
     Icons.home,
+    Icons.view_agenda_outlined,
     Icons.settings,
   ];
 
@@ -40,7 +45,7 @@ class _NavScreenState extends State<NavScreen> {
           indicator: BoxDecoration(
             border: Border(
               top: BorderSide(
-                color: const Color.fromARGB(255, 203, 138, 115),
+                color: borderColor,
                 width: 3.0,
               ),
             ),
@@ -53,7 +58,7 @@ class _NavScreenState extends State<NavScreen> {
                       icon: Icon(
                         e,
                         color:
-                            i == _selectedIndex ? const Color.fromARGB(255, 203, 138, 115) : Colors.black45,
+                            i == _selectedIndex ? primaryColor : Colors.black45,
                         size: 30.0,
                       ),
                     ),
@@ -66,4 +71,3 @@ class _NavScreenState extends State<NavScreen> {
     );
   }
 }
-
