@@ -160,24 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddItemPage(),
-            ),
-          ).then((newItem) {
-            // print(newItem);
-            if (newItem != null) {
-              setState(() {
-                _items.add(newItem);
-              });
-            }
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
