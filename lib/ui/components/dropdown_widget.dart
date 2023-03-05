@@ -25,18 +25,18 @@ class _DropdownWidgetState extends State<DropdownWidget> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
-        border: Border.all(
-          color: primaryColor,
-          width: 2.0,
-        ),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(30.0),
+        // border: Border.all(
+        //   // color: primaryColor,
+        //   width: 2.0,
+        // ),
       ),
       child: ListTile(
-        // contentPadding:
-        //     const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
         title: Text(
           widget.status,
         ),
+        visualDensity: const VisualDensity(vertical: -3), // to compact
         trailing: Text(_selectedOption ?? ''),
         onTap: () {
           showMaterialModalBottomSheet(

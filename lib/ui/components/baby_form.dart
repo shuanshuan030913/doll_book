@@ -305,7 +305,7 @@ class _BabyFormState extends State<BabyForm> {
               ),
             ),
           ),
-          SizedBox(height: 12.0),
+          SizedBox(height: 16.0),
           DropdownWidget(
             onOptionSelected: _onOptionSelected,
             status: _status,
