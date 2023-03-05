@@ -39,7 +39,8 @@ class ImageCard extends StatelessWidget {
                 child: Image.network(
                   image!,
                   width: double.infinity,
-                  fit: BoxFit.fitWidth,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
                 ),
               ),
               // Label box

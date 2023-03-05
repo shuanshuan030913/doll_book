@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:doll_app/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -159,7 +160,17 @@ class _AddItemPageState extends State<AddItemPage> {
     User? user = _auth.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text("新增"),
+        elevation: 0.0, // Remove the shadow on top
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(
+          color: primaryColor,
+        ),
+        title: const Text(
+          '新增',
+          style: TextStyle(
+            color: primaryColor,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
