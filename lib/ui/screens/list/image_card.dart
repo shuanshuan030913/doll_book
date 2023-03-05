@@ -1,4 +1,4 @@
-import 'package:doll_app/ui/components/image_label.dart';
+import 'package:doll_app/ui/screens/list/image_label.dart';
 import 'package:flutter/material.dart';
 
 class ImageCard extends StatelessWidget {

@@ -5,7 +5,7 @@ class Item {
   final String id;
   final String name;
   final String? image;
-  final DateTime createDate;
+  final DateTime? createDate;
   final String status;
   final double? price;
   final double? priceAdd;
@@ -16,7 +16,7 @@ class Item {
     required this.id,
     required this.name,
     this.image,
-    required this.createDate,
+    this.createDate,
     required this.status,
     this.price,
     this.priceAdd,
@@ -25,12 +25,13 @@ class Item {
   });
 
   factory Item.fromMap(Map<String, dynamic> map) {
-    final Timestamp createTimestamp = map['createDate'] as Timestamp;
+    final Timestamp? createTimestamp =
+        map['createDate'] != null ? map['createDate'] as Timestamp : null;
     return Item(
       id: map['id'] as String,
       name: map['name'] as String,
       image: map['image'] as String?,
-      createDate: createTimestamp.toDate(),
+      createDate: createTimestamp != null ? createTimestamp.toDate() : null,
       status: map['status'] as String,
       price: map['price'] as double?,
       priceAdd: map['priceAdd'] as double?,

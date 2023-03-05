@@ -6,12 +6,10 @@ import 'package:doll_app/ui/screens/login_screen.dart';
 
 import '../../utils/token.dart';
 
-
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
 }
-
 
 class _MainScreenState extends State<MainScreen> {
   bool isAuthenticated = false;
@@ -27,7 +25,6 @@ class _MainScreenState extends State<MainScreen> {
     try {
       String? token = await getTokenFromPrefs();
       if (token != null) {
-
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => NavScreen()),
@@ -50,8 +47,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

@@ -1,11 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:doll_app/ui/screens/home/item_page.dart';
-import 'package:doll_app/ui/screens/home/add_page.dart';
 import 'package:doll_app/ui/components/item.dart';
-import 'package:doll_app/ui/components/item_card.dart';
+import 'package:doll_app/ui/screens/list/item_card.dart';
 import 'package:doll_app/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -143,12 +139,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       final Item item = filteredItems[index];
                       return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ItemPage(item: item),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => EditPage(item: item),
+                            //   ),
+                            // );
                           },
                           child: ItemCard(item: item));
                     },

@@ -35,7 +35,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     User? user = _auth.currentUser;
-    print(user);
+    // print(user);
     return CustomScrollView(
       controller: _trackingScrollController,
       slivers: [

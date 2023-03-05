@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:doll_app/ui/screens/home/item_page.dart';
+import 'package:doll_app/ui/screens/home/edit_page.dart';
 import 'package:doll_app/ui/screens/home/add_page.dart';
 import 'package:doll_app/ui/components/item.dart';
-import 'package:doll_app/ui/components/item_card.dart';
+import 'package:doll_app/ui/screens/list/item_card.dart';
 import 'package:doll_app/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -25,6 +23,9 @@ class _ListScreenState extends State<ListScreen> {
   Stream<List<Item>> _itemsStream = Stream.value([]);
 
   final User user = FirebaseAuth.instance.currentUser!;
+
+// Initialize a Firestore instance
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final List _items = [];
 
@@ -66,7 +67,6 @@ class _ListScreenState extends State<ListScreen> {
           SliverAppBar(
             pinned: true,
             expandedHeight: 55.0,
-            backgroundColor: primaryColor,
             title: Text('我的娃'),
             actions: [
               IconButton(
@@ -151,7 +151,11 @@ class _ListScreenState extends State<ListScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ItemPage(item: item),
+                                builder: (context) => EditPage(
+                                  documentId: item.id,
+                                  collectionReference:
+                                      firestore.collection('items'),
+                                ),
                               ),
                             );
                           },
@@ -171,13 +175,14 @@ class _ListScreenState extends State<ListScreen> {
         child: Opacity(
           opacity: 0.8,
           child: FloatingActionButton(
-            backgroundColor: primaryColor,
+            foregroundColor: Colors.white,
             elevation: 0.0, // Remove the shadow
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddItemPage(),
+                  builder: (context) => AddItemPage(
+                      collectionReference: firestore.collection('items')),
                 ),
               ).then((newItem) {
                 // print(newItem);
