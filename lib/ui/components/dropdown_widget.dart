@@ -1,4 +1,3 @@
-import 'package:doll_app/colors.dart';
 import 'package:doll_app/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -26,18 +25,14 @@ class _DropdownWidgetState extends State<DropdownWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(30.0),
-        // border: Border.all(
-        //   // color: primaryColor,
-        //   width: 2.0,
-        // ),
+        borderRadius: BorderRadius.circular(6.0),
       ),
       child: ListTile(
         title: Text(
           widget.status,
         ),
         visualDensity: const VisualDensity(vertical: -3), // to compact
-        trailing: Text(_selectedOption ?? ''),
+        trailing: Icon(Icons.expand_more),
         onTap: () {
           showMaterialModalBottomSheet(
             context: context,

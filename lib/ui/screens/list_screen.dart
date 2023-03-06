@@ -155,6 +155,7 @@ class _ListScreenState extends State<ListScreen> {
                                   documentId: item.id,
                                   collectionReference:
                                       firestore.collection('items'),
+                                  data: item,
                                 ),
                               ),
                             );

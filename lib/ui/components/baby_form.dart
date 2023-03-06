@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:doll_app/colors.dart';
 import 'package:doll_app/constants.dart';
 import 'package:doll_app/ui/components/dropdown_widget.dart';
+import 'package:doll_app/ui/components/item.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,29 +13,25 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart' as path;
 
-FirebaseFirestore firestore = FirebaseFirestore.instance;
+/// 金額品項
+class PriceItem {
+  String name;
+  double price;
+
+  PriceItem({
+    required this.name,
+    required this.price,
+  });
+}
 
 class BabyForm extends StatefulWidget {
   final CollectionReference collectionReference;
   final String? documentId;
-  final String name;
-  final DateTime? createDate;
-  final String status;
-  final double? price;
-  final double? priceAdd;
-  final String? source;
-  final String? remark;
-
+  final Item? data;
   BabyForm({
-    this.documentId,
-    this.name = '',
-    this.createDate,
-    this.status = '數調中',
-    this.price,
-    this.priceAdd,
-    this.source,
-    this.remark,
     required this.collectionReference,
+    this.documentId,
+    this.data,
   });
 
   @override
@@ -46,6 +43,7 @@ class _BabyFormState extends State<BabyForm> {
   final _formKey = GlobalKey<FormState>();
   // 圖片
   File? _imageFile;
+  String? _image; // 來自編輯的路徑
   // 項目名稱
   String _name = '';
   // 購買日期
@@ -68,13 +66,14 @@ class _BabyFormState extends State<BabyForm> {
   @override
   void initState() {
     super.initState();
-    _name = widget.name;
-    _createDate = widget.createDate;
-    _status = widget.status;
-    _price = widget.price;
-    _priceAdd = widget.priceAdd;
-    _source = widget.source;
-    _remark = widget.remark;
+    _image = widget.data?.image;
+    _name = widget.data != null ? widget.data!.name : '';
+    _createDate = widget.data?.createDate;
+    _status = widget.data != null ? widget.data!.status : '數調中';
+    _price = widget.data?.price;
+    _priceAdd = widget.data?.priceAdd;
+    _source = widget.data?.source;
+    _remark = widget.data?.remark;
   }
 
   Future<CroppedFile?> _cropImage(File imageFile) async {
@@ -195,6 +194,16 @@ class _BabyFormState extends State<BabyForm> {
     });
   }
 
+  String _formatPrice(double? price) {
+    if (price == null) {
+      return '';
+    }
+    if (price == price.toInt()) {
+      return price.toInt().toString();
+    }
+    return price.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     User? user = _auth.currentUser;
@@ -209,7 +218,7 @@ class _BabyFormState extends State<BabyForm> {
             child: Container(
               height: 180,
               decoration: BoxDecoration(
-                border: _imageFile != null
+                border: _imageFile != null || _image != null
                     ? null
                     : Border.all(
                         color: primaryColor, // Set the border color to pink
@@ -220,7 +229,7 @@ class _BabyFormState extends State<BabyForm> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                child: _imageFile == null
+                child: _imageFile == null && _image == null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 16.0, horizontal: 60.0),
@@ -232,12 +241,12 @@ class _BabyFormState extends State<BabyForm> {
                               Container(
                                 width: 50.0,
                                 height: 50.0,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color:
                                       primaryColor, // Set the background color of the circle
                                 ),
-                                child: CircleAvatar(
+                                child: const CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   child: Icon(
                                     Icons.camera_alt,
@@ -258,7 +267,9 @@ class _BabyFormState extends State<BabyForm> {
                           ),
                         ),
                       )
-                    : Image.file(_imageFile!),
+                    : _imageFile != null
+                        ? Image.file(_imageFile!)
+                        : Image.network(_image!),
               ),
             ),
           ),
@@ -267,7 +278,7 @@ class _BabyFormState extends State<BabyForm> {
           ),
           TextFormField(
             decoration: InputDecoration(labelText: '項目名稱'),
-            initialValue: widget.name,
+            initialValue: _name,
             validator: (value) {
               if (value!.isEmpty) {
                 return '必填項目';
@@ -280,7 +291,7 @@ class _BabyFormState extends State<BabyForm> {
             onTap: () async {
               final selectedDate = await showDatePicker(
                 context: context,
-                initialDate: widget.createDate ?? DateTime.now(),
+                initialDate: _createDate ?? DateTime.now(),
                 firstDate: DateTime(1900),
                 lastDate: DateTime.now(),
               );
@@ -345,6 +356,7 @@ class _BabyFormState extends State<BabyForm> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: TextFormField(
+                    initialValue: _formatPrice(_price),
                     decoration: InputDecoration(
                       labelText: '金額',
                     ),
@@ -363,6 +375,7 @@ class _BabyFormState extends State<BabyForm> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: TextFormField(
+                    initialValue: _formatPrice(_priceAdd),
                     decoration: InputDecoration(
                       labelText: '二補',
                     ),
@@ -380,6 +393,7 @@ class _BabyFormState extends State<BabyForm> {
             ],
           ),
           TextFormField(
+            initialValue: _source ?? null,
             decoration: InputDecoration(
               labelText: '來源',
               hintText: 'https://',
@@ -393,6 +407,7 @@ class _BabyFormState extends State<BabyForm> {
             onSaved: (value) => _source = value!,
           ),
           TextFormField(
+            initialValue: _remark ?? null,
             maxLines: 2,
             decoration: InputDecoration(labelText: '備註'),
             validator: (value) {
