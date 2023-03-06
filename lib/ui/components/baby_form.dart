@@ -120,6 +120,7 @@ class _BabyFormState extends State<BabyForm> {
     print('getImage() _imageFile: $_imageFile');
   }
 
+  /// 打 API 時才真正上傳圖片
   Future uploadImage() async {
     final User user = FirebaseAuth.instance.currentUser!;
     final String userId = user.uid;
@@ -131,12 +132,18 @@ class _BabyFormState extends State<BabyForm> {
         FirebaseStorage.instance.ref().child('items/$userId/images/$fileName');
 
     await storageRef.putFile(_imageFile!);
+
+    // 刪除編輯前的照片
+    if (_imageFile != null && _image != null) {
+      final oldImageRef = FirebaseStorage.instance.refFromURL(_image!);
+      await oldImageRef.delete();
+    }
     // Get the download URL for the uploaded image
     final String imageUrl = await storageRef.getDownloadURL();
     return imageUrl;
   }
 
-  Future<void> addItem() async {
+  Future<void> sendItem() async {
     // Get the current user's ID
     final User user = FirebaseAuth.instance.currentUser!;
     final String userId = user.uid;
@@ -145,7 +152,7 @@ class _BabyFormState extends State<BabyForm> {
     final DocumentReference<Map<String, dynamic>> userDocRef =
         FirebaseFirestore.instance.collection('data').doc(userId);
 
-    String? imageUrl = _imageFile == null ? null : await uploadImage();
+    String? imageUrl = _imageFile == null ? _image : await uploadImage();
     Map<String, dynamic> data = {
       'name': _name,
       'image': imageUrl,
@@ -163,10 +170,18 @@ class _BabyFormState extends State<BabyForm> {
       await userDocRef.set({});
     }
     final CollectionReference itemDocRef = userDocRef.collection('items');
-    await itemDocRef
-        .add(data)
-        .then((value) => {print("User Added"), Navigator.pop(context)})
-        .catchError((error) => print("Failed to add items: $error"));
+    if (widget.documentId == null) {
+      await itemDocRef
+          .add(data)
+          .then((value) => {print("User Added"), Navigator.pop(context)})
+          .catchError((error) => print("Failed to add items: $error"));
+    } else {
+      await itemDocRef
+          .doc(widget.documentId)
+          .update(data)
+          .then((value) => {print("User Edited"), Navigator.pop(context)})
+          .catchError((error) => print("Failed to edit items: $error"));
+    }
 
     // await data.get().then((event) {
     //   print('success event');
@@ -452,12 +467,7 @@ class _BabyFormState extends State<BabyForm> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      if (widget.documentId == null) {
-                        // Add new document
-                        await addItem();
-                      } else {
-                        // Update existing document
-                      }
+                      await sendItem();
                     }
                     // ScaffoldMessenger.of(context).showSnackBar(
                     //   SnackBar(
