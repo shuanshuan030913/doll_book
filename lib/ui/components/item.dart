@@ -24,11 +24,11 @@ class Item {
     this.remark,
   });
 
-  factory Item.fromMap(Map<String, dynamic> map) {
+  factory Item.fromMap(Map<String, dynamic> map, docId) {
     final Timestamp? createTimestamp =
         map['createDate'] != null ? map['createDate'] as Timestamp : null;
     return Item(
-      id: map['id'] as String,
+      id: docId as String,
       name: map['name'] as String,
       image: map['image'] as String?,
       createDate: createTimestamp != null ? createTimestamp.toDate() : null,

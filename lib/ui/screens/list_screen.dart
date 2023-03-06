@@ -46,15 +46,14 @@ class _ListScreenState extends State<ListScreen> {
         FirebaseFirestore.instance.collection('data');
     return collectionReference
         .doc(user.uid)
+        .collection('items')
         .snapshots()
-        .map((DocumentSnapshot<Map<String, dynamic>> snapshot) {
+        .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
       List<Item> items = [];
-      if (snapshot.exists) {
-        for (Map<String, dynamic> map in snapshot.data()!['items']) {
-          Item item = Item.fromMap(map);
-          items.add(item);
-        }
-      }
+      snapshot.docs.forEach((DocumentSnapshot<Map<String, dynamic>> doc) {
+        Item item = Item.fromMap(doc.data()!, doc.id);
+        items.add(item);
+      });
       return items;
     });
   }

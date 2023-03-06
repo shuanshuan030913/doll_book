@@ -42,12 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
         .snapshots()
         .map((DocumentSnapshot<Map<String, dynamic>> snapshot) {
       List<Item> items = [];
-      if (snapshot.exists) {
-        for (Map<String, dynamic> map in snapshot.data()!['items']) {
-          Item item = Item.fromMap(map);
-          items.add(item);
-        }
-      }
       return items;
     });
   }

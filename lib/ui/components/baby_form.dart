@@ -142,16 +142,11 @@ class _BabyFormState extends State<BabyForm> {
     final String userId = user.uid;
 
     // Create a reference to the user's document with their ID
-    final DocumentReference userDocRef =
+    final DocumentReference<Map<String, dynamic>> userDocRef =
         FirebaseFirestore.instance.collection('data').doc(userId);
 
-    // Generate a new unique ID for the item
-    final String itemId = userDocRef.collection('items').doc().id;
-
-    print('userDocRef: $userDocRef');
     String? imageUrl = _imageFile == null ? null : await uploadImage();
     Map<String, dynamic> data = {
-      'id': itemId,
       'name': _name,
       'image': imageUrl,
       'status': _status,
@@ -164,21 +159,14 @@ class _BabyFormState extends State<BabyForm> {
 
     // Add a new item to the "items" array field in the user's document
     final userData = await userDocRef.get().then((doc) => doc.data());
-    if (userData != null) {
-      await userDocRef
-          .update({
-            'items': FieldValue.arrayUnion([data])
-          })
-          .then((value) => {print("User Added"), Navigator.pop(context)})
-          .catchError((error) => print("Failed to add items: $error"));
-    } else {
-      await userDocRef
-          .set({
-            'items': FieldValue.arrayUnion([data])
-          })
-          .then((value) => {print("User Added"), Navigator.pop(context)})
-          .catchError((error) => print("Failed to add items: $error"));
+    if (userData == null) {
+      await userDocRef.set({});
     }
+    final CollectionReference itemDocRef = userDocRef.collection('items');
+    await itemDocRef
+        .add(data)
+        .then((value) => {print("User Added"), Navigator.pop(context)})
+        .catchError((error) => print("Failed to add items: $error"));
 
     // await data.get().then((event) {
     //   print('success event');
@@ -470,7 +458,6 @@ class _BabyFormState extends State<BabyForm> {
                       } else {
                         // Update existing document
                       }
-                      Navigator.pop(context);
                     }
                     // ScaffoldMessenger.of(context).showSnackBar(
                     //   SnackBar(

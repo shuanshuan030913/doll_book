@@ -18,14 +18,14 @@ class NavScreen extends StatefulWidget {
 
 class _NavScreenState extends State<NavScreen> {
   final List<Widget> _screens = [
-    const HomeScreen(),
     const ListScreen(),
+    const HomeScreen(),
     const UserScreen(),
   ];
 
   final List<IconData> _icons = [
-    Icons.home,
     Icons.view_agenda_outlined,
+    Icons.home,
     Icons.settings,
   ];
 
