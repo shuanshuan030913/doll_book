@@ -1,3 +1,4 @@
+import 'package:doll_app/ui/screens/home/detail_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:doll_app/ui/screens/home/edit_page.dart';
@@ -150,8 +151,7 @@ class _ListScreenState extends State<ListScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EditPage(
-                                  documentId: item.id,
+                                builder: (context) => DetailPage(
                                   collectionReference:
                                       firestore.collection('items'),
                                   data: item,
