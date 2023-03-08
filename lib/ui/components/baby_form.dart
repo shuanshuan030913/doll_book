@@ -4,7 +4,8 @@ import 'package:doll_app/colors.dart';
 import 'package:doll_app/constants.dart';
 import 'package:doll_app/ui/components/dropdown_widget.dart';
 import 'package:doll_app/ui/components/item.dart';
-import 'package:doll_app/ui/form/BabyTextFormField.dart';
+import 'package:doll_app/ui/form/baby_text_form_field.dart';
+import 'package:doll_app/ui/form/dynamically_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -333,6 +334,8 @@ class _BabyFormState extends State<BabyForm> {
                 ),
               ],
             ),
+            SizedBox(height: 10),
+            DynamicallyTextFormField(),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -5,11 +5,13 @@ class BabyTextFormField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
   final int? maxLines;
+  final bool? enabled;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final Function()? onTap;
   final Function(String?)? onSaved;
 
   const BabyTextFormField({
@@ -20,8 +22,10 @@ class BabyTextFormField extends StatelessWidget {
     this.suffixIcon,
     this.keyboardType,
     this.inputFormatters,
+    this.enabled,
     this.controller,
     this.validator,
+    this.onTap,
     this.onSaved,
   }) : super(key: key);
 
@@ -29,6 +33,8 @@ class BabyTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue,
+      enabled: enabled,
+      onTap: onTap,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
