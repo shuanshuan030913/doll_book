@@ -287,37 +287,51 @@ class _BabyFormState extends State<BabyForm> {
               onSaved: (value) => _name = value!,
             ),
             SizedBox(height: 10),
-            GestureDetector(
-              onTap: () async {
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: _createDate ?? DateTime.now(),
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime.now(),
-                );
-                setState(() {
-                  _createDate = selectedDate;
-                });
-              },
-              child: AbsorbPointer(
-                child: BabyTextFormField(
-                  hintText: '購買日期',
-                  suffixIcon: Icon(Icons.calendar_today),
-                  controller: TextEditingController(
-                    text: _createDate != null
-                        ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
-                        : '',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 4.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: _createDate ?? DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime.now(),
+                        );
+                        setState(() {
+                          _createDate = selectedDate;
+                        });
+                      },
+                      child: AbsorbPointer(
+                        child: BabyTextFormField(
+                          hintText: '購買日期',
+                          suffixIcon: Icon(Icons.calendar_today),
+                          controller: TextEditingController(
+                            text: _createDate != null
+                                ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
+                                : '',
+                          ),
+                          validator: (value) {
+                            return null;
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                  validator: (value) {
-                    return null;
-                  },
                 ),
-              ),
-            ),
-            SizedBox(height: 16.0),
-            DropdownWidget(
-              onOptionSelected: _onOptionSelected,
-              status: _status,
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: DropdownWidget(
+                      onOptionSelected: _onOptionSelected,
+                      status: _status,
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 10),
             Row(
@@ -325,7 +339,7 @@ class _BabyFormState extends State<BabyForm> {
               children: [
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(right: 4.0),
                     child: BabyTextFormField(
                       initialValue: _formatPrice(_price),
                       hintText: '金額',
@@ -342,7 +356,7 @@ class _BabyFormState extends State<BabyForm> {
                 ),
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.only(left: 4.0),
                     child: BabyTextFormField(
                       initialValue: _formatPrice(_priceAdd),
                       hintText: '二補',

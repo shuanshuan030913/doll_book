@@ -36,7 +36,7 @@ class BabyTextFormField extends StatelessWidget {
         ),
         // filled: true,
         // fillColor: Colors.grey[100],
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Color(0xFFE0E0E0),
           ),
