@@ -4,6 +4,7 @@ import 'package:doll_app/colors.dart';
 import 'package:doll_app/constants.dart';
 import 'package:doll_app/ui/components/dropdown_widget.dart';
 import 'package:doll_app/ui/components/item.dart';
+import 'package:doll_app/ui/form/BabyTextFormField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -273,11 +274,9 @@ class _BabyFormState extends State<BabyForm> {
                       ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: '項目名稱'),
+            SizedBox(height: 10),
+            BabyTextFormField(
+              hintText: '項目名稱',
               initialValue: _name,
               validator: (value) {
                 if (value!.isEmpty) {
@@ -287,6 +286,7 @@ class _BabyFormState extends State<BabyForm> {
               },
               onSaved: (value) => _name = value!,
             ),
+            SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
                 final selectedDate = await showDatePicker(
@@ -300,11 +300,9 @@ class _BabyFormState extends State<BabyForm> {
                 });
               },
               child: AbsorbPointer(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: '購買日期',
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
+                child: BabyTextFormField(
+                  hintText: '購買日期',
+                  suffixIcon: Icon(Icons.calendar_today),
                   controller: TextEditingController(
                     text: _createDate != null
                         ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
@@ -321,18 +319,16 @@ class _BabyFormState extends State<BabyForm> {
               onOptionSelected: _onOptionSelected,
               status: _status,
             ),
-            SizedBox(height: 6.0),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: TextFormField(
+                    child: BabyTextFormField(
                       initialValue: _formatPrice(_price),
-                      decoration: InputDecoration(
-                        labelText: '金額',
-                      ),
+                      hintText: '金額',
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
@@ -347,11 +343,9 @@ class _BabyFormState extends State<BabyForm> {
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: TextFormField(
+                    child: BabyTextFormField(
                       initialValue: _formatPrice(_priceAdd),
-                      decoration: InputDecoration(
-                        labelText: '二補',
-                      ),
+                      hintText: '二補',
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (value) {
@@ -365,12 +359,10 @@ class _BabyFormState extends State<BabyForm> {
                 )
               ],
             ),
-            TextFormField(
+            SizedBox(height: 10),
+            BabyTextFormField(
+              hintText: '來源網址',
               initialValue: _source ?? null,
-              decoration: InputDecoration(
-                labelText: '來源',
-                hintText: 'https://',
-              ),
               validator: (value) {
                 // if (value!.startsWith('https://')) {
                 //   return '請輸入來源網址';
@@ -379,10 +371,11 @@ class _BabyFormState extends State<BabyForm> {
               },
               onSaved: (value) => _source = value!,
             ),
-            TextFormField(
+            SizedBox(height: 10),
+            BabyTextFormField(
               initialValue: _remark ?? null,
-              maxLines: 2,
-              decoration: InputDecoration(labelText: '備註'),
+              maxLines: 5,
+              hintText: '備註',
               validator: (value) {
                 return null;
               },
