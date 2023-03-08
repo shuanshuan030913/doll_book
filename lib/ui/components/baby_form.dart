@@ -212,236 +212,206 @@ class _BabyFormState extends State<BabyForm> {
     User? user = _auth.currentUser;
     return Form(
       key: _formKey,
-      child: Column(
-        children: <Widget>[
-          InkWell(
-            onTap: () {
-              getImage();
-            },
-            child: Container(
-              height: 180,
-              decoration: BoxDecoration(
-                border: _imageFile != null || _image != null
-                    ? null
-                    : Border.all(
-                        color: primaryColor, // Set the border color to pink
-                        width: 2.0,
-                      ),
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(6.0)),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                getImage();
+              },
+              child: Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  border: _imageFile != null || _image != null
+                      ? null
+                      : Border.all(
+                          color: primaryColor, // Set the border color to pink
+                          width: 2.0,
+                        ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                ),
                 child: _imageFile == null && _image == null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 60.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 50.0,
-                                height: 50.0,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
+                    ? SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                    primaryColor, // Set the background color of the circle
+                              ),
+                              child: const CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  size: 30.0, // Set the size of the icon
                                   color:
-                                      primaryColor, // Set the background color of the circle
-                                ),
-                                child: const CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: 30.0, // Set the size of the icon
-                                    color: Colors
-                                        .white, // Set the color of the icon
-                                  ),
+                                      Colors.white, // Set the color of the icon
                                 ),
                               ),
-                              SizedBox(height: 8.0),
-                              Text(
-                                '選擇圖片',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              '選擇圖片',
+                              style: TextStyle(
+                                color: Colors.grey[600],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       )
-                    : _imageFile != null
-                        ? Image.file(_imageFile!)
-                        : Image.network(_image!),
+                    : ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                        child: _imageFile != null
+                            ? Image.file(_imageFile!)
+                            : Image.network(_image!),
+                      ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            decoration: InputDecoration(labelText: '項目名稱'),
-            initialValue: _name,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return '必填項目';
-              }
-              return null;
-            },
-            onSaved: (value) => _name = value!,
-          ),
-          GestureDetector(
-            onTap: () async {
-              final selectedDate = await showDatePicker(
-                context: context,
-                initialDate: _createDate ?? DateTime.now(),
-                firstDate: DateTime(1900),
-                lastDate: DateTime.now(),
-              );
-              setState(() {
-                _createDate = selectedDate;
-              });
-            },
-            child: AbsorbPointer(
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: '購買日期',
-                  suffixIcon: Icon(Icons.calendar_today),
+            SizedBox(
+              height: 10,
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: '項目名稱'),
+              initialValue: _name,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return '必填項目';
+                }
+                return null;
+              },
+              onSaved: (value) => _name = value!,
+            ),
+            GestureDetector(
+              onTap: () async {
+                final selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: _createDate ?? DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+                setState(() {
+                  _createDate = selectedDate;
+                });
+              },
+              child: AbsorbPointer(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: '購買日期',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  controller: TextEditingController(
+                    text: _createDate != null
+                        ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
+                        : '',
+                  ),
+                  validator: (value) {
+                    return null;
+                  },
                 ),
-                controller: TextEditingController(
-                  text: _createDate != null
-                      ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
-                      : '',
-                ),
-                validator: (value) {
-                  return null;
-                },
               ),
             ),
-          ),
-          SizedBox(height: 16.0),
-          DropdownWidget(
-            onOptionSelected: _onOptionSelected,
-            status: _status,
-          ),
-          // Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          //   height: 50.0,
-          //   width: double.infinity,
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(6.0),
-          //     color: Color.fromARGB(255, 255, 217, 182),
-          //   ),
-          //   child: DropdownButtonHideUnderline(
-          //     child: DropdownButton<String>(
-          //       value: _status,
-          //       items: statusOptions.map((option) {
-          //         return DropdownMenuItem<String>(
-          //           value: option,
-          //           child: Text(option),
-          //         );
-          //       }).toList(),
-          //       onChanged: (value) {
-          //         if (value != null) {
-          //           setState(() {
-          //             _status = value;
-          //           });
-          //         }
-          //       },
-          //     ),
-          //   ),
-          // ),
-          SizedBox(height: 6.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: TextFormField(
-                    initialValue: _formatPrice(_price),
-                    decoration: InputDecoration(
-                      labelText: '金額',
+            SizedBox(height: 16.0),
+            DropdownWidget(
+              onOptionSelected: _onOptionSelected,
+              status: _status,
+            ),
+            SizedBox(height: 6.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: TextFormField(
+                      initialValue: _formatPrice(_price),
+                      decoration: InputDecoration(
+                        labelText: '金額',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _price = double.tryParse(value!);
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _price = double.tryParse(value!);
-                    },
                   ),
                 ),
-              ),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: TextFormField(
-                    initialValue: _formatPrice(_priceAdd),
-                    decoration: InputDecoration(
-                      labelText: '二補',
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: TextFormField(
+                      initialValue: _formatPrice(_priceAdd),
+                      decoration: InputDecoration(
+                        labelText: '二補',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      validator: (value) {
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _priceAdd = double.tryParse(value!);
+                      },
                     ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _priceAdd = double.tryParse(value!);
-                    },
                   ),
-                ),
-              )
-            ],
-          ),
-          TextFormField(
-            initialValue: _source ?? null,
-            decoration: InputDecoration(
-              labelText: '來源',
-              hintText: 'https://',
+                )
+              ],
             ),
-            validator: (value) {
-              // if (value!.startsWith('https://')) {
-              //   return '請輸入來源網址';
-              // }
-              return null;
-            },
-            onSaved: (value) => _source = value!,
-          ),
-          TextFormField(
-            initialValue: _remark ?? null,
-            maxLines: 2,
-            decoration: InputDecoration(labelText: '備註'),
-            validator: (value) {
-              return null;
-            },
-            onSaved: (value) => _remark = value!,
-          ),
-          // Container(
-          //   padding: EdgeInsets.all(16.0),
-          //   child: InkWell(
-          //     onTap: () {
-          //       setState(() {
-          //         _isChecked = !_isChecked;
-          //       });
-          //     },
-          //     child: Row(
-          //       children: [
-          //         Checkbox(
-          //           value: _isChecked,
-          //           onChanged: (value) {
-          //             setState(() {
-          //               _isChecked = value!;
-          //             });
-          //           },
-          //         ),
-          //         Text('已取件'),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          Padding(
+            TextFormField(
+              initialValue: _source ?? null,
+              decoration: InputDecoration(
+                labelText: '來源',
+                hintText: 'https://',
+              ),
+              validator: (value) {
+                // if (value!.startsWith('https://')) {
+                //   return '請輸入來源網址';
+                // }
+                return null;
+              },
+              onSaved: (value) => _source = value!,
+            ),
+            TextFormField(
+              initialValue: _remark ?? null,
+              maxLines: 2,
+              decoration: InputDecoration(labelText: '備註'),
+              validator: (value) {
+                return null;
+              },
+              onSaved: (value) => _remark = value!,
+            ),
+            // Container(
+            //   padding: EdgeInsets.all(16.0),
+            //   child: InkWell(
+            //     onTap: () {
+            //       setState(() {
+            //         _isChecked = !_isChecked;
+            //       });
+            //     },
+            //     child: Row(
+            //       children: [
+            //         Checkbox(
+            //           value: _isChecked,
+            //           onChanged: (value) {
+            //             setState(() {
+            //               _isChecked = value!;
+            //             });
+            //           },
+            //         ),
+            //         Text('已取件'),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 60.0),
               child: SizedBox(
@@ -487,8 +457,10 @@ class _BabyFormState extends State<BabyForm> {
                     ),
                   ),
                 ),
-              )),
-        ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
