@@ -1,5 +1,5 @@
 import 'package:doll_app/colors.dart';
-import 'package:doll_app/ui/components/baby_form.dart';
+import 'package:doll_app/ui/widgets/baby_form.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

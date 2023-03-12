@@ -1,6 +1,6 @@
-import 'package:doll_app/ui/components/icon_text_button.dart';
-import 'package:doll_app/ui/form/baby_text_form_field.dart';
-import 'package:doll_app/ui/form/detail_type_button.dart';
+import 'package:doll_app/ui/widgets/icon_text_button.dart';
+import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
+import 'package:doll_app/models/detail_type_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

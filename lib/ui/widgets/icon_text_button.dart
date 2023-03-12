@@ -1,4 +1,3 @@
-import 'package:doll_app/colors.dart';
 import 'package:flutter/material.dart';
 
 class IconTextButton extends StatelessWidget {

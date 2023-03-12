@@ -1,5 +1,5 @@
-import 'package:doll_app/ui/form/baby_detail_dialog.dart';
-import 'package:doll_app/ui/form/baby_text_form_field.dart';
+import 'package:doll_app/ui/widgets/form/baby_detail_dialog.dart';
+import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

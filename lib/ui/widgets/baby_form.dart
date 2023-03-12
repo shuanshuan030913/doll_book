@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:doll_app/colors.dart';
-import 'package:doll_app/constants.dart';
-import 'package:doll_app/ui/components/dropdown_widget.dart';
-import 'package:doll_app/ui/components/item.dart';
-import 'package:doll_app/ui/form/baby_text_form_field.dart';
-import 'package:doll_app/ui/form/dynamically_text_form_field.dart';
+import 'package:doll_app/ui/widgets/dropdown_widget.dart';
+import 'package:doll_app/models/item.dart';
+import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
+import 'package:doll_app/ui/widgets/form/dynamically_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
