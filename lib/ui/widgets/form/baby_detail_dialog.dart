@@ -1,6 +1,7 @@
 import 'package:doll_app/models/price_item.dart';
 import 'package:doll_app/ui/widgets/icon_text_button.dart';
 import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
+import 'package:doll_app/utils/data_format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,8 +9,10 @@ import '../../../constants.dart';
 
 /// 可動態新增輸入框
 class BabyDetailDialog extends StatefulWidget {
+  final PriceItem? data;
   const BabyDetailDialog({
     Key? key,
+    this.data,
   }) : super(key: key);
 
   @override
@@ -22,6 +25,17 @@ class _BabyDetailDialogState extends State<BabyDetailDialog> {
   String? _iconType;
   String _name = '';
   double? _price;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.data != null) {
+      _iconType = widget.data!.type;
+      _name = widget.data!.name ?? '';
+      _price = widget.data!.price;
+      _textController.text = widget.data!.name ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +99,10 @@ class _BabyDetailDialogState extends State<BabyDetailDialog> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 4.0),
                       child: BabyTextFormField(
+                        initialValue: formatPrice(_price),
                         hintText: '金額',
                         keyboardType: TextInputType.number,
+                        textAlign: TextAlign.right,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],

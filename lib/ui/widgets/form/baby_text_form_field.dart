@@ -6,6 +6,7 @@ class BabyTextFormField extends StatelessWidget {
   final String? hintText;
   final int? maxLines;
   final bool? enabled;
+  final TextAlign? textAlign;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
@@ -19,6 +20,7 @@ class BabyTextFormField extends StatelessWidget {
     this.initialValue,
     this.hintText,
     this.maxLines,
+    this.textAlign,
     this.suffixIcon,
     this.keyboardType,
     this.inputFormatters,
@@ -35,6 +37,7 @@ class BabyTextFormField extends StatelessWidget {
       initialValue: initialValue,
       enabled: enabled,
       onTap: onTap,
+      textAlign: textAlign ?? TextAlign.start,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(

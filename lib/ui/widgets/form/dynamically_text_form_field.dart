@@ -110,37 +110,66 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                   .firstWhere((button) => button.text == item.type);
               return SizedBox(
                 height: 40,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          SizedBox(width: 12),
-                          Container(
-                            width: 28,
-                            height: 28,
-                            child: CircleAvatar(
-                              backgroundColor: itemTypeData.color,
-                              child: Icon(
-                                itemTypeData.icon,
-                                size: 14,
-                                color: Colors.white,
+                child: GestureDetector(
+                  onTap: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BabyDetailDialog(
+                          data: item,
+                        );
+                      },
+                    ).then((result) {
+                      if (result != null) {
+                        List<PriceItem> newPriceItems = List.from(_priceItems);
+                        newPriceItems[index] = result;
+                        double totalPrice = newPriceItems.fold(
+                          0.0, // initial value of the accumulator
+                          (accumulator, item) => accumulator + item.price,
+                        );
+                        setState(() {
+                          _priceItems = newPriceItems;
+                          _total = totalPrice;
+                        });
+                        widget.onChanged!(
+                          _priceItems,
+                          _total,
+                        );
+                      }
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            SizedBox(width: 12),
+                            Container(
+                              width: 28,
+                              height: 28,
+                              child: CircleAvatar(
+                                backgroundColor: itemTypeData.color,
+                                child: Icon(
+                                  itemTypeData.icon,
+                                  size: 14,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 10),
-                          Text(item.name),
-                        ],
+                            SizedBox(width: 10),
+                            Text(item.name),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        '\$ ${formatPrice(item.price)}',
-                        textAlign: TextAlign.right,
+                      Expanded(
+                        child: Text(
+                          '\$ ${formatPrice(item.price)}',
+                          textAlign: TextAlign.right,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 12),
-                  ],
+                      SizedBox(width: 12),
+                    ],
+                  ),
                 ),
               );
             },
