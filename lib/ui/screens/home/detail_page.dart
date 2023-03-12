@@ -130,7 +130,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                         width: double.infinity,
                         child: Text(
-                          '\$${widget.data.price?.toString() ?? '0'}',
+                          '\$${widget.data.priceTotal?.toString() ?? '0'}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.0,

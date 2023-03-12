@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doll_app/models/price_item.dart';
 
 class Item {
   final String id;
@@ -6,8 +7,8 @@ class Item {
   final String? image;
   final DateTime? createDate;
   final String status;
-  final double? price;
-  final double? priceAdd;
+  final List<PriceItem>? priceList;
+  final double? priceTotal;
   final String? source;
   final String? remark;
 
@@ -17,8 +18,8 @@ class Item {
     this.image,
     this.createDate,
     required this.status,
-    this.price,
-    this.priceAdd,
+    this.priceList,
+    this.priceTotal,
     this.source,
     this.remark,
   });
@@ -32,8 +33,12 @@ class Item {
       image: map['image'] as String?,
       createDate: createTimestamp != null ? createTimestamp.toDate() : null,
       status: map['status'] as String,
-      price: map['price'] as double?,
-      priceAdd: map['priceAdd'] as double?,
+      priceList: List<PriceItem>.from(
+        (map['priceList'] ?? []).map(
+          (item) => PriceItem.fromMap(item),
+        ),
+      ),
+      priceTotal: map['priceTotal'] as double?,
       source: map['source'] as String?,
       remark: map['remark'] as String?,
     );

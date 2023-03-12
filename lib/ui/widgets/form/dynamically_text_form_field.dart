@@ -1,25 +1,28 @@
+import 'package:doll_app/models/detail_type_button.dart';
+import 'package:doll_app/models/price_item.dart';
 import 'package:doll_app/ui/widgets/form/baby_detail_dialog.dart';
 import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../constants.dart';
+import '../../../utils/data_format_utils.dart';
+
 /// 可動態新增輸入框
 class DynamicallyTextFormField extends StatefulWidget {
-  final String? initialValue;
-  final String? hintText;
-  final TextInputType? keyboardType;
-  final List<TextInputFormatter>? inputFormatters;
-  final TextEditingController? controller;
-  final Function(String?)? onSaved;
+  /// 總計
+  final double? total;
 
-  const DynamicallyTextFormField({
+  /// 金額明細
+  final List<PriceItem>? priceItems;
+
+  final Function(List<PriceItem>, double)? onChanged;
+
+  DynamicallyTextFormField({
     Key? key,
-    this.initialValue,
-    this.hintText,
-    this.keyboardType,
-    this.inputFormatters,
-    this.controller,
-    this.onSaved,
+    this.total,
+    required this.priceItems,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -28,29 +31,119 @@ class DynamicallyTextFormField extends StatefulWidget {
 }
 
 class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
-  // String _selectedOption = '';
+  List<PriceItem> _priceItems = [];
+  double _total = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _priceItems = widget.priceItems ?? [];
+    _total = widget.total ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return BabyDetailDialog();
-              },
-            );
-          },
-          child: AbsorbPointer(
-            absorbing: false,
-            child: BabyTextFormField(
-              enabled: false,
-              hintText: '+金額',
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return BabyDetailDialog();
+                    },
+                  ).then((result) {
+                    if (result != null) {
+                      setState(() {
+                        _priceItems.add(result);
+                        _total = _total + result.price;
+                      });
+                      widget.onChanged!(
+                        _priceItems,
+                        _total,
+                      );
+                    }
+                  });
+                },
+                child: AbsorbPointer(
+                  absorbing: false,
+                  child: Container(
+                    child: Stack(
+                      children: [
+                        BabyTextFormField(
+                          enabled: false,
+                          hintText: '+ 金額',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                        Positioned(
+                          top: 14,
+                          right: 12,
+                          child: Text(
+                            formatPrice(widget.total),
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
+          ],
+        ),
+        SizedBox(height: 8),
+        SizedBox(
+          height: _priceItems.length * 40,
+          child: ListView.builder(
+            itemCount: _priceItems.length,
+            itemBuilder: (context, index) {
+              PriceItem item = _priceItems[index];
+              final DetailTypeButton itemTypeData = priceOptionsButton
+                  .firstWhere((button) => button.text == item.type);
+              return SizedBox(
+                height: 40,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          SizedBox(width: 12),
+                          Container(
+                            width: 28,
+                            height: 28,
+                            child: CircleAvatar(
+                              backgroundColor: itemTypeData.color,
+                              child: Icon(
+                                itemTypeData.icon,
+                                size: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(item.name),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '\$ ${formatPrice(item.price)}',
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ],

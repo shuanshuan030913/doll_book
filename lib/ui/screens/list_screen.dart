@@ -8,8 +8,6 @@ import 'package:doll_app/ui/screens/list/item_card.dart';
 import 'package:doll_app/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../colors.dart';
-
 class ListScreen extends StatefulWidget {
   const ListScreen({Key? key}) : super(key: key);
 

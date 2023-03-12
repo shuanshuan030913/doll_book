@@ -7,23 +7,14 @@ import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
 import 'package:doll_app/ui/widgets/form/dynamically_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doll_app/models/price_item.dart';
 import 'package:path/path.dart' as path;
 
-/// 金額品項
-class PriceItem {
-  String name;
-  double price;
-
-  PriceItem({
-    required this.name,
-    required this.price,
-  });
-}
+import '../../utils/data_format_utils.dart';
 
 class BabyForm extends StatefulWidget {
   final CollectionReference collectionReference;
@@ -53,10 +44,9 @@ class _BabyFormState extends State<BabyForm> {
   // 當前狀態
   String _status = '數調中';
   // 金額
-  double? _price;
-  // 二補
-  double? _priceAdd;
+  List<PriceItem>? _priceList = [];
   // 總計
+  double? _priceTotal;
   // 來源
   String? _source;
   // 取件
@@ -71,8 +61,8 @@ class _BabyFormState extends State<BabyForm> {
     _name = widget.data != null ? widget.data!.name : '';
     _createDate = widget.data?.createDate;
     _status = widget.data != null ? widget.data!.status : '數調中';
-    _price = widget.data?.price;
-    _priceAdd = widget.data?.priceAdd;
+    _priceList = widget.data?.priceList ?? [];
+    _priceTotal = widget.data?.priceTotal;
     _source = widget.data?.source;
     _remark = widget.data?.remark;
   }
@@ -158,8 +148,8 @@ class _BabyFormState extends State<BabyForm> {
       'name': _name,
       'image': imageUrl,
       'status': _status,
-      'price': _price,
-      'priceAdd': _priceAdd,
+      'priceList': _priceList!.map((priceItem) => priceItem.toMap()).toList(),
+      'priceTotal': _priceTotal,
       'source': _source,
       'remark': _remark,
       'createDate': _createDate,
@@ -196,16 +186,6 @@ class _BabyFormState extends State<BabyForm> {
     setState(() {
       _status = option;
     });
-  }
-
-  String _formatPrice(double? price) {
-    if (price == null) {
-      return '';
-    }
-    if (price == price.toInt()) {
-      return price.toInt().toString();
-    }
-    return price.toString();
   }
 
   @override
@@ -334,48 +314,17 @@ class _BabyFormState extends State<BabyForm> {
               ],
             ),
             SizedBox(height: 10),
-            DynamicallyTextFormField(),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
-                    child: BabyTextFormField(
-                      initialValue: _formatPrice(_price),
-                      hintText: '金額',
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      validator: (value) {
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _price = double.tryParse(value!);
-                      },
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: BabyTextFormField(
-                      initialValue: _formatPrice(_priceAdd),
-                      hintText: '二補',
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      validator: (value) {
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _priceAdd = double.tryParse(value!);
-                      },
-                    ),
-                  ),
-                )
-              ],
+            DynamicallyTextFormField(
+              total: _priceTotal,
+              priceItems: _priceList,
+              onChanged: (data, total) {
+                setState(() {
+                  _priceTotal = total;
+                  _priceList = data;
+                });
+              },
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 2),
             BabyTextFormField(
               hintText: '來源網址',
               initialValue: _source ?? null,
