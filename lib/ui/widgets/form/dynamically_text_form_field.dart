@@ -56,10 +56,15 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                       return BabyDetailDialog();
                     },
                   ).then((result) {
+                    /// 點擊新增
                     if (result != null) {
+                      double totalPrice = _priceItems.fold(
+                        0.0, // initial value of the accumulator
+                        (accumulator, item) => accumulator + item.price,
+                      );
                       setState(() {
-                        _priceItems.add(result);
-                        _total = _total + result.price;
+                        _priceItems.add(result.priceItem);
+                        _total = totalPrice + result.priceItem.price;
                       });
                       widget.onChanged!(
                         _priceItems,
@@ -120,9 +125,15 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                         );
                       },
                     ).then((result) {
-                      if (result != null) {
+                      if (result.mode == 'delete') {
+                        /// 點擊刪除
+                        setState(() {
+                          _priceItems.remove(item);
+                        });
+                      } else if (result != null) {
+                        /// 點擊編輯
                         List<PriceItem> newPriceItems = List.from(_priceItems);
-                        newPriceItems[index] = result;
+                        newPriceItems[index] = result.priceItem;
                         double totalPrice = newPriceItems.fold(
                           0.0, // initial value of the accumulator
                           (accumulator, item) => accumulator + item.price,

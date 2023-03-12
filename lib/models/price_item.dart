@@ -1,11 +1,11 @@
 class PriceItem {
-  // final String? id;
+  // final String id;
   final String name;
   final String type;
   final double price;
 
   PriceItem({
-    // this.id,
+    // required this.id,
     required this.name,
     required this.type,
     required this.price,
@@ -26,7 +26,7 @@ class PriceItem {
 
   factory PriceItem.fromMap(Map<String, dynamic> map) {
     return PriceItem(
-      // id: id as String,
+      // id: map['id'] as String,
       name: map['name'] as String,
       type: map['type'] as String,
       price: map['price'] as double,

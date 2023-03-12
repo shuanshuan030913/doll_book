@@ -1,3 +1,4 @@
+import 'package:doll_app/models/navigator_detail_data.dart';
 import 'package:doll_app/models/price_item.dart';
 import 'package:doll_app/ui/widgets/icon_text_button.dart';
 import 'package:doll_app/ui/widgets/form/baby_text_form_field.dart';
@@ -55,7 +56,7 @@ class _BabyDetailDialogState extends State<BabyDetailDialog> {
     }).toList();
 
     return AlertDialog(
-      title: Text(
+      title: const Text(
         '款項明細',
         textAlign: TextAlign.center,
       ),
@@ -70,12 +71,12 @@ class _BabyDetailDialogState extends State<BabyDetailDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: buttonWidgets.take(5).toList(),
               ),
-              SizedBox(height: 18),
+              const SizedBox(height: 18),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: buttonWidgets.skip(5).toList(),
               ),
-              SizedBox(height: 18),
+              const SizedBox(height: 18),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,32 +122,85 @@ class _BabyDetailDialogState extends State<BabyDetailDialog> {
           ),
         ),
       ),
-      insetPadding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: [
-        TextButton(
-          onPressed: () {
-            // Do something when the "OK" button is pressed
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            '取消',
-            style: TextStyle(
-              color: Colors.grey[400],
+        Row(
+          children: [
+            if (widget.data != null)
+              Expanded(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(
+                      NavigatorDetailData(
+                        mode: 'delete',
+                        priceItem: PriceItem(
+                          name: _name,
+                          type: _iconType ?? '其他',
+                          price: _price ?? 0,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    '刪除',
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ),
+              ),
+            SizedBox(width: 10),
+            Expanded(
+              child: TextButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  // Do something when the "OK" button is pressed
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  '取消',
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-              Navigator.of(context).pop(PriceItem(
-                name: _name,
-                type: _iconType ?? '其他',
-                price: _price ?? 0,
-              ));
-            }
-          },
-          child: Text('確定'),
+            SizedBox(width: 10),
+            Expanded(
+              child: TextButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    Navigator.of(context).pop(
+                      NavigatorDetailData(
+                        mode: widget.data != null ? 'edit' : 'add',
+                        priceItem: PriceItem(
+                          name: _name,
+                          type: _iconType ?? '其他',
+                          price: _price ?? 0,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('確定'),
+              ),
+            ),
+          ],
         ),
       ],
     );

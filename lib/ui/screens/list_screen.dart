@@ -146,6 +146,7 @@ class _ListScreenState extends State<ListScreen> {
                       final Item item = filteredItems[index];
                       return GestureDetector(
                           onTap: () {
+                            print('${user.uid}');
                             Navigator.push(
                               context,
                               MaterialPageRoute(

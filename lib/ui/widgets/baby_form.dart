@@ -14,8 +14,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doll_app/models/price_item.dart';
 import 'package:path/path.dart' as path;
 
-import '../../utils/data_format_utils.dart';
-
 class BabyForm extends StatefulWidget {
   final CollectionReference collectionReference;
   final String? documentId;
@@ -173,13 +171,6 @@ class _BabyFormState extends State<BabyForm> {
           .then((value) => {print("User Edited"), Navigator.pop(context)})
           .catchError((error) => print("Failed to edit items: $error"));
     }
-
-    // await data.get().then((event) {
-    //   print('success event');
-    //   for (var doc in event.docs) {
-    //     print("${doc.id} => ${doc.data()}");
-    //   }
-    // });
   }
 
   void _onOptionSelected(String option) {

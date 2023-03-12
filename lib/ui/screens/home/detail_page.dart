@@ -1,5 +1,4 @@
 import 'package:doll_app/colors.dart';
-import 'package:doll_app/ui/widgets/baby_form.dart';
 import 'package:doll_app/models/item.dart';
 import 'package:doll_app/ui/screens/home/edit_page.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +19,22 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  late final Item data;
+
+  @override
+  void initState() {
+    super.initState();
+    data = widget.data;
+  }
+
+  void _onReturnedData(dynamic returnedData) {
+    if (returnedData != null) {
+      setState(() {
+        data = returnedData;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +44,9 @@ class _DetailPageState extends State<DetailPage> {
         children: [
           Stack(
             children: [
-              widget.data.image != null
+              data.image != null
                   ? Image.network(
-                      widget.data.image!,
+                      data.image!,
                       height: 400,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -76,17 +91,18 @@ class _DetailPageState extends State<DetailPage> {
                 top: 70.0,
                 right: 20.0,
                 child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    final returnedData = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditPage(
-                          documentId: widget.data.id,
+                          documentId: data.id,
                           collectionReference: widget.collectionReference,
-                          data: widget.data,
+                          data: data,
                         ),
                       ),
                     );
+                    _onReturnedData(returnedData);
                   },
                   child: const CircleAvatar(
                     backgroundColor: primaryColor,
@@ -115,7 +131,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                         width: double.infinity,
                         child: Text(
-                          widget.data.name,
+                          data.name,
                           style: const TextStyle(
                             color: Color.fromARGB(255, 255, 249, 249),
                             fontSize: 28.0,
@@ -130,7 +146,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                         width: double.infinity,
                         child: Text(
-                          '\$${widget.data.priceTotal?.toString() ?? '0'}',
+                          '\$${data.priceTotal?.toString() ?? '0'}',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.0,
@@ -183,7 +199,7 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   width: double.infinity,
                   child: Text(
-                    '購買日期： ${widget.data.createDate != null ? DateFormat('yyyy/MM/dd').format(widget.data.createDate!) : ""}',
+                    '購買日期： ${data.createDate != null ? DateFormat('yyyy/MM/dd').format(data.createDate!) : ""}',
                     style: const TextStyle(
                       fontSize: 16.0,
                     ),
@@ -195,7 +211,7 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   width: double.infinity,
                   child: Text(
-                    '狀態： ${widget.data.status}',
+                    '狀態： ${data.status}',
                     style: const TextStyle(
                       fontSize: 16.0,
                     ),
@@ -207,7 +223,7 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   width: double.infinity,
                   child: Text(
-                    '備註： ${widget.data.remark ?? ""}',
+                    '備註： ${data.remark ?? ""}',
                     style: const TextStyle(
                       fontSize: 16.0,
                     ),
