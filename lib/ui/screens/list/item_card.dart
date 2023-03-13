@@ -25,6 +25,8 @@ class ItemCard extends StatelessWidget {
           ),
           Text(
             item.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 14),
           ),
         ],
