@@ -125,7 +125,7 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                         );
                       },
                     ).then((result) {
-                      if (result.mode == 'delete') {
+                      if (result != null && result.mode == 'delete') {
                         /// 點擊刪除
                         setState(() {
                           _priceItems.remove(item);

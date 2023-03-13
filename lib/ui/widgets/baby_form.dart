@@ -168,7 +168,20 @@ class _BabyFormState extends State<BabyForm> {
       await itemDocRef
           .doc(widget.documentId)
           .update(data)
-          .then((value) => {print("User Edited"), Navigator.pop(context)})
+          .then((value) => {
+                print("User Edited"),
+                Navigator.of(context).pop(Item(
+                  id: widget.documentId!,
+                  name: _name,
+                  image: imageUrl,
+                  status: _status,
+                  priceList: _priceList,
+                  priceTotal: _priceTotal,
+                  source: _source,
+                  remark: _remark,
+                  createDate: _createDate,
+                ))
+              })
           .catchError((error) => print("Failed to edit items: $error"));
     }
   }

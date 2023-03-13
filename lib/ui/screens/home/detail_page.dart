@@ -19,7 +19,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  late final Item data;
+  late Item data;
 
   @override
   void initState() {
