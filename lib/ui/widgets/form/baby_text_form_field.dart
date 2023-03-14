@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class BabyTextFormField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
+  final Color? hintTextColor;
   final int? maxLines;
   final bool? enabled;
   final TextAlign? textAlign;
@@ -20,6 +21,7 @@ class BabyTextFormField extends StatelessWidget {
     Key? key,
     this.initialValue,
     this.hintText,
+    this.hintTextColor,
     this.maxLines,
     this.textAlign,
     this.suffixIcon,
@@ -44,7 +46,7 @@ class BabyTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(
-          color: Colors.grey[400],
+          color: hintTextColor ?? Colors.grey[400],
         ),
         // filled: true,
         // fillColor: Colors.grey[100],

@@ -393,8 +393,7 @@ class _BabyFormState extends State<BabyForm> {
                 //   ),
                 // ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 60.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -412,7 +411,7 @@ class _BabyFormState extends State<BabyForm> {
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(
-                                30.0), // Set the border radius
+                                6.0), // Set the border radius
                           ),
                         ),
                       ),

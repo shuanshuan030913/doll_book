@@ -1,3 +1,4 @@
+import 'package:doll_app/colors.dart';
 import 'package:doll_app/models/detail_type_button.dart';
 import 'package:doll_app/models/price_item.dart';
 import 'package:doll_app/ui/widgets/form/baby_detail_dialog.dart';
@@ -87,20 +88,11 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                           focusNode: widget.focusNode,
                           enabled: false,
                           hintText: '+ 金額',
+                          hintTextColor: primaryColor,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly
                           ],
-                        ),
-                        Positioned(
-                          top: 14,
-                          right: 12,
-                          child: Text(
-                            formatPrice(widget.total),
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -190,6 +182,24 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
             }).toList()
           ],
         ),
+        if (_total > 0)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const Divider(
+                height: 20,
+                color: Colors.black,
+              ),
+              Padding(
+                padding: EdgeInsets.only(right: 12),
+                child: Text(
+                  '總計：\$ ${formatPrice(_total)}',
+                  style: TextStyle(),
+                ),
+              ),
+            ],
+          ),
+        SizedBox(height: 8),
       ],
     );
   }
