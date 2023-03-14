@@ -14,6 +14,7 @@ class BabyTextFormField extends StatelessWidget {
   final String? Function(String?)? validator;
   final Function()? onTap;
   final Function(String?)? onSaved;
+  final FocusNode? focusNode;
 
   const BabyTextFormField({
     Key? key,
@@ -29,11 +30,13 @@ class BabyTextFormField extends StatelessWidget {
     this.validator,
     this.onTap,
     this.onSaved,
+    this.focusNode,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
       initialValue: initialValue,
       enabled: enabled,
       onTap: onTap,

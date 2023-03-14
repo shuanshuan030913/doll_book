@@ -17,12 +17,16 @@ class DynamicallyTextFormField extends StatefulWidget {
   final List<PriceItem>? priceItems;
 
   final Function(List<PriceItem>, double)? onChanged;
+  final FocusNode? focusNode;
+  final Function? closeFocus;
 
   DynamicallyTextFormField({
     Key? key,
     this.total,
     required this.priceItems,
     this.onChanged,
+    this.focusNode,
+    this.closeFocus,
   }) : super(key: key);
 
   @override
@@ -50,6 +54,7 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
             Expanded(
               child: GestureDetector(
                 onTap: () async {
+                  widget.closeFocus!();
                   await showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -79,6 +84,7 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                     child: Stack(
                       children: [
                         BabyTextFormField(
+                          focusNode: widget.focusNode,
                           enabled: false,
                           hintText: '+ 金額',
                           keyboardType: TextInputType.number,
@@ -105,14 +111,12 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
           ],
         ),
         SizedBox(height: 8),
-        SizedBox(
-          height: _priceItems.length * 40,
-          child: ListView.builder(
-            itemCount: _priceItems.length,
-            itemBuilder: (context, index) {
-              PriceItem item = _priceItems[index];
+        Column(
+          children: [
+            ..._priceItems.map((item) {
               final DetailTypeButton itemTypeData = priceOptionsButton
                   .firstWhere((button) => button.text == item.type);
+              final itemIndex = _priceItems.indexOf(item);
               return SizedBox(
                 height: 40,
                 child: GestureDetector(
@@ -133,7 +137,7 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                       } else if (result != null) {
                         /// 點擊編輯
                         List<PriceItem> newPriceItems = List.from(_priceItems);
-                        newPriceItems[index] = result.priceItem;
+                        newPriceItems[itemIndex] = result.priceItem;
                         double totalPrice = newPriceItems.fold(
                           0.0, // initial value of the accumulator
                           (accumulator, item) => accumulator + item.price,
@@ -183,8 +187,8 @@ class _DynamicallyTextFormFieldState extends State<DynamicallyTextFormField> {
                   ),
                 ),
               );
-            },
-          ),
+            }).toList()
+          ],
         ),
       ],
     );

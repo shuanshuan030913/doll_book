@@ -52,6 +52,8 @@ class _BabyFormState extends State<BabyForm> {
   // 備註
   String? _remark;
 
+  FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +65,12 @@ class _BabyFormState extends State<BabyForm> {
     _priceTotal = widget.data?.priceTotal;
     _source = widget.data?.source;
     _remark = widget.data?.remark;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focusNode.dispose();
   }
 
   Future<CroppedFile?> _cropImage(File imageFile) async {
@@ -195,235 +203,247 @@ class _BabyFormState extends State<BabyForm> {
   @override
   Widget build(BuildContext context) {
     User? user = _auth.currentUser;
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                getImage();
-              },
-              child: Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  border: _imageFile != null || _image != null
-                      ? null
-                      : Border.all(
-                          color: primaryColor, // Set the border color to pink
-                          width: 2.0,
-                        ),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                ),
-                child: _imageFile == null && _image == null
-                    ? SizedBox(
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 50.0,
-                              height: 50.0,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                    primaryColor, // Set the background color of the circle
-                              ),
-                              child: const CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  size: 30.0, // Set the size of the icon
-                                  color:
-                                      Colors.white, // Set the color of the icon
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              '選擇圖片',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                        child: _imageFile != null
-                            ? Image.file(_imageFile!)
-                            : Image.network(_image!),
-                      ),
-              ),
-            ),
-            SizedBox(height: 10),
-            BabyTextFormField(
-              hintText: '項目名稱',
-              initialValue: _name,
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return '必填項目';
-                }
-                return null;
-              },
-              onSaved: (value) => _name = value!,
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return GestureDetector(
+        onTap: () {},
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        final selectedDate = await showDatePicker(
-                          context: context,
-                          initialDate: _createDate ?? DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime.now(),
-                        );
-                        setState(() {
-                          _createDate = selectedDate;
-                        });
-                      },
-                      child: AbsorbPointer(
-                        child: BabyTextFormField(
-                          hintText: '購買日期',
-                          suffixIcon: Icon(Icons.calendar_today),
-                          controller: TextEditingController(
-                            text: _createDate != null
-                                ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
-                                : '',
+                GestureDetector(
+                  onTap: () {
+                    getImage();
+                  },
+                  child: Container(
+                    height: 180,
+                    decoration: BoxDecoration(
+                      border: _imageFile != null || _image != null
+                          ? null
+                          : Border.all(
+                              color:
+                                  primaryColor, // Set the border color to pink
+                              width: 2.0,
+                            ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    ),
+                    child: _imageFile == null && _image == null
+                        ? SizedBox(
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 50.0,
+                                  height: 50.0,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        primaryColor, // Set the background color of the circle
+                                  ),
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      size: 30.0, // Set the size of the icon
+                                      color: Colors
+                                          .white, // Set the color of the icon
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 8.0),
+                                Text(
+                                  '選擇圖片',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(6.0)),
+                            child: _imageFile != null
+                                ? Image.file(_imageFile!)
+                                : Image.network(_image!),
                           ),
-                          validator: (value) {
-                            return null;
+                  ),
+                ),
+                SizedBox(height: 10),
+                BabyTextFormField(
+                  focusNode: _focusNode,
+                  hintText: '項目名稱',
+                  initialValue: _name,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return '必填項目';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _name = value!,
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: _createDate ?? DateTime.now(),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now(),
+                            );
+                            setState(() {
+                              _createDate = selectedDate;
+                            });
                           },
+                          child: AbsorbPointer(
+                            child: BabyTextFormField(
+                              hintText: '購買日期',
+                              suffixIcon: Icon(Icons.calendar_today),
+                              controller: TextEditingController(
+                                text: _createDate != null
+                                    ? "${_createDate?.year}/${_createDate?.month}/${_createDate?.day}"
+                                    : '',
+                              ),
+                              validator: (value) {
+                                return null;
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: DropdownWidget(
+                          onOptionSelected: _onOptionSelected,
+                          status: _status,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 4.0),
-                    child: DropdownWidget(
-                      onOptionSelected: _onOptionSelected,
-                      status: _status,
+                SizedBox(height: 10),
+                DynamicallyTextFormField(
+                  closeFocus: () {
+                    _focusNode.unfocus();
+                  },
+                  focusNode: _focusNode,
+                  total: _priceTotal,
+                  priceItems: _priceList,
+                  onChanged: (data, total) {
+                    setState(() {
+                      _priceTotal = total;
+                      _priceList = data;
+                    });
+                  },
+                ),
+                SizedBox(height: 2),
+                BabyTextFormField(
+                  focusNode: _focusNode,
+                  hintText: '來源網址',
+                  initialValue: _source ?? null,
+                  validator: (value) {
+                    // if (value!.startsWith('https://')) {
+                    //   return '請輸入來源網址';
+                    // }
+                    return null;
+                  },
+                  onSaved: (value) => _source = value!,
+                ),
+                SizedBox(height: 10),
+                BabyTextFormField(
+                  focusNode: _focusNode,
+                  initialValue: _remark ?? null,
+                  maxLines: 5,
+                  hintText: '備註',
+                  validator: (value) {
+                    return null;
+                  },
+                  onSaved: (value) => _remark = value!,
+                ),
+                // Container(
+                //   padding: EdgeInsets.all(16.0),
+                //   child: InkWell(
+                //     onTap: () {
+                //       setState(() {
+                //         _isChecked = !_isChecked;
+                //       });
+                //     },
+                //     child: Row(
+                //       children: [
+                //         Checkbox(
+                //           value: _isChecked,
+                //           onChanged: (value) {
+                //             setState(() {
+                //               _isChecked = value!;
+                //             });
+                //           },
+                //         ),
+                //         Text('已取件'),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 60.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.all<double>(0),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(primaryColor),
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                          const EdgeInsets.symmetric(
+                            vertical:
+                                12.0, // Set the vertical padding to increase the button height
+                          ),
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                30.0), // Set the border radius
+                          ),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          await sendItem();
+                        }
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(
+                        //     content: Text('新增成功'),
+                        //   ),
+                        // );
+                        // Navigator.pop(
+                        //   context,
+                        //   Item(name: _name, path: _path, date: dateController.text),
+                        // );
+                      },
+                      child: Text(
+                        '送出',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            DynamicallyTextFormField(
-              total: _priceTotal,
-              priceItems: _priceList,
-              onChanged: (data, total) {
-                setState(() {
-                  _priceTotal = total;
-                  _priceList = data;
-                });
-              },
-            ),
-            SizedBox(height: 2),
-            BabyTextFormField(
-              hintText: '來源網址',
-              initialValue: _source ?? null,
-              validator: (value) {
-                // if (value!.startsWith('https://')) {
-                //   return '請輸入來源網址';
-                // }
-                return null;
-              },
-              onSaved: (value) => _source = value!,
-            ),
-            SizedBox(height: 10),
-            BabyTextFormField(
-              initialValue: _remark ?? null,
-              maxLines: 5,
-              hintText: '備註',
-              validator: (value) {
-                return null;
-              },
-              onSaved: (value) => _remark = value!,
-            ),
-            // Container(
-            //   padding: EdgeInsets.all(16.0),
-            //   child: InkWell(
-            //     onTap: () {
-            //       setState(() {
-            //         _isChecked = !_isChecked;
-            //       });
-            //     },
-            //     child: Row(
-            //       children: [
-            //         Checkbox(
-            //           value: _isChecked,
-            //           onChanged: (value) {
-            //             setState(() {
-            //               _isChecked = value!;
-            //             });
-            //           },
-            //         ),
-            //         Text('已取件'),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 60.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all<double>(0),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(primaryColor),
-                    padding: MaterialStateProperty.all<EdgeInsets>(
-                      const EdgeInsets.symmetric(
-                        vertical:
-                            12.0, // Set the vertical padding to increase the button height
-                      ),
-                    ),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            30.0), // Set the border radius
-                      ),
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      await sendItem();
-                    }
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBar(
-                    //     content: Text('新增成功'),
-                    //   ),
-                    // );
-                    // Navigator.pop(
-                    //   context,
-                    //   Item(name: _name, path: _path, date: dateController.text),
-                    // );
-                  },
-                  child: Text(
-                    '送出',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }
